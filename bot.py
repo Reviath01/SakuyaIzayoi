@@ -15,6 +15,19 @@ client = commands.Bot(command_prefix = get_prefix)
 status = cycle(['Prefix: !', 'Reviath'])
 
 @client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send('This command does not exist! Issue `!help` for a list of commands.')
+
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send('You don\'t have enough permission to run this command.')
+
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Please give all required arguments.')
+
+    print(error)
+
+@client.event
 async def on_guild_join(guild):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)

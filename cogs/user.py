@@ -25,7 +25,7 @@ class User(commands.Cog):
             member = ctx.message.author
         roles = [role.mention for role in member.roles[1:]]
         roles.append('@everyone')
-        embed = discord.Embed(colour=discord.Colour.purple(), timestamp=ctx.message.created_at,
+        embed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at,
                           title=f"User Info - {member}")
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f"Requested by {ctx.author}")
@@ -44,7 +44,7 @@ class User(commands.Cog):
     async def avatar(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
-        messageembed = discord.Embed(colour=discord.Colour.blue(), timestamp=ctx.message.created_at, title=f"Avatar of {member}")
+        messageembed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at, title=f"Avatar of {member}")
         messageembed.set_image(url=member.avatar_url)
         await ctx.send(embed=messageembed)
 
@@ -65,7 +65,7 @@ class User(commands.Cog):
         current_time = time.time()
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
-        statembed = discord.Embed(colour=discord.Colour.green(), title="My stats")
+        statembed = discord.Embed(colour=ctx.author.top_role.colour, title="My stats")
         statembed.add_field(name="Guild Size", value=f"{len(self.client.guilds)}")
         statembed.add_field(name="Ping", value=f"{self.client.latency * 1000}")
         statembed.add_field(name="Release", value=f"{os.uname().release}")
