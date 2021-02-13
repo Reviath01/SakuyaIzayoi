@@ -42,7 +42,7 @@ class Fun(commands.Cog):
     @commands.command(brief="Allows you to hug someone", description="Allows you to hug someone")
     async def hug(self, ctx, member : discord.Member):
         hugembed = discord.Embed(description=f"{ctx.author.mention} hugs <@{member.id}>", colour=discord.Colour.red())
-        hugembed.set_image(url="https://tenor.com/view/touhou-hug-anime-gif-5047796")
+        hugembed.set_image(url="https://i.pinimg.com/originals/4d/d7/49/4dd749423de10a319b5d9e8850bbace4.gif")
         await ctx.send(embed = hugembed)
 
 def setup(client):
