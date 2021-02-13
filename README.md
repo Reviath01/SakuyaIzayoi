@@ -17,7 +17,7 @@ Clone this project.
 ```
 
 ```
-Get your bots prefix and edit [bot.py](bot.py) 's client.run('TOKEN') part.  
+Get your bots prefix and edit bot.py's client.run('TOKEN') part.  
 ```
 
 ```
