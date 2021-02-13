@@ -24,7 +24,7 @@ Get your bots prefix and edit [bot.py](bot.py) 's client.run('TOKEN') part.
 Type "python bot.py" on terminal
 ```
 
-##Author
+## Author
 
 [Reviath](https://discord.com/users/770218429096656917/)
 
