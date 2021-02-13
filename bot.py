@@ -16,7 +16,6 @@ status = cycle(['Prefix: !', 'Reviath'])
 
 @client.event
 async def on_command_error(ctx, error):
-    print(error)
     await ctx.send(error)
 
 @client.event

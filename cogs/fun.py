@@ -45,5 +45,11 @@ class Fun(commands.Cog):
         hugembed.set_image(url="https://i.pinimg.com/originals/4d/d7/49/4dd749423de10a319b5d9e8850bbace4.gif")
         await ctx.send(embed = hugembed)
 
+    @commands.command(brief="Allows you to kiss someone", description="Allows you to kiss someone")
+    async def kiss(self, ctx, member : discord.Member):
+        kissembed = discord.Embed(description=f"{ctx.author.mention} kisses {member.mention}", colour=0xff00eb)
+        kissembed.set_image(url="https://media.tenor.com/images/d68747a5865b12c465e5dff31c65d5c2/tenor.gif")
+        await ctx.send(embed = kissembed)
+
 def setup(client):
     client.add_cog(Fun(client))
