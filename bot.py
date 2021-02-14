@@ -51,6 +51,11 @@ async def on_ready():
 async def change_status():
     await client.change_presence(activity=discord.Game(next(status)))
 
+@client.command(brief="Shows my code on gitlab", description="Shows my code on gitlab")
+async def code(ctx):
+    gitlabembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here](https://git.randomchars.net/Reviath/sakuya-izayoi)")
+    await ctx.send(embed=gitlabembed)
+
 @client.command(brief="Shows my author", description="Shows my author")
 async def author(ctx):
     authorembed = discord.Embed(description="My Author: \n<@!770218429096656917> ([Reviath#0001](https://discord.com/users/770218429096656917))", colour=discord.Colour.purple())
