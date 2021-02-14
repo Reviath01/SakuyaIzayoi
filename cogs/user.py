@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 import psutil
 import discord, datetime, time
+import platform
 
 start_time = time.time()
 
@@ -17,7 +18,7 @@ class User(commands.Cog):
 
     @commands.command(brief="Send's latency of bot", description="Send's latency of bot")
     async def ping(self, ctx):
-        await ctx.send(f'Pong! {self.client.latency * 1000}')
+        await ctx.send(f'Pong! {round(self.client.latency * 1000)}')
 
     @commands.command(brief="Send's user information", description="Send's information about user (if you don't mention anyone, it will show yours)")
     async def whois(self, ctx, member: discord.Member = None):
@@ -66,13 +67,16 @@ class User(commands.Cog):
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
         statembed = discord.Embed(colour=ctx.author.top_role.colour, title="My stats")
-        statembed.add_field(name="Guild Size", value=f"{len(self.client.guilds)}")
-        statembed.add_field(name="Ping", value=f"{self.client.latency * 1000}")
+        statembed.add_field(name="Guild size", value=f"{len(self.client.guilds)}")
+        statembed.add_field(name="Ping", value=f"{round(self.client.latency * 1000)}")
         statembed.add_field(name="Release", value=f"{os.uname().release}")
         statembed.add_field(name="Platform", value=f"{os.uname().sysname}")
-        statembed.add_field(name="Machine", value=f"{os.uname().machine}")
-        statembed.add_field(name="CPU Percent", value=f"{psutil.cpu_percent()}%")
+        statembed.add_field(name="Machine", value=f"{platform.system()}, {os.uname().machine}")
+        statembed.add_field(name="CPU percent", value=f"{psutil.cpu_percent()}%")
         statembed.add_field(name="Uptime", value=text)
+        statembed.add_field(name="Category size", value=str(len(self.client.cogs)))
+        statembed.add_field(name="Commands size", value=str(len(self.client.commands)))
+        statembed.add_field(name="Discord.py Version", value=str(platform.python_version))
         await ctx.send(embed=statembed)
 
 def setup(client):
