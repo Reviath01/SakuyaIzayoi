@@ -14,6 +14,8 @@ def get_prefix(client, message):
 client = commands.Bot(command_prefix = get_prefix)
 status = cycle(['Prefix: !', 'Reviath'])
 
+client.get_all_members()
+
 @client.event
 async def on_command_error(ctx, error):
     log = client.get_channel(790640302452375562)
@@ -107,6 +109,26 @@ async def restart(ctx):
         restart_program()
     else:
         await ctx.send('This command is only for my author.')
+
+@client.command(pass_context=True, brief="Joins a voice channel", description="Joins a voice channel")
+async def join(ctx):
+    if ctx.author.voice.channel:
+        channel = ctx.author.voice.channel
+        await channel.connect()
+        await ctx.send('I\'m joining channel!')
+    else:
+        await ctx.send('You should be in a voice channel to run this command.')
+        return
+
+@client.command(pass_context=True, brief="Leaves the voice channel", description="Leaves the voice channel")
+async def leave(ctx):
+    if ctx.message.guild.voice_client:
+        channel = ctx.message.guild.voice_client
+        await channel.disconnect()
+        await ctx.send('I\'m leaving channel!')
+    else:
+        await ctx.send('I\'m not in a voice channel to leave.')
+        return
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):

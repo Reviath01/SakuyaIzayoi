@@ -76,7 +76,9 @@ class User(commands.Cog):
         statembed.add_field(name="Uptime", value=text)
         statembed.add_field(name="Category size", value=str(len(self.client.cogs)))
         statembed.add_field(name="Commands size", value=str(len(self.client.commands)))
-        statembed.add_field(name="Discord.py Version", value=str(platform.python_version))
+        statembed.add_field(name="Discord.py version", value=str(discord.__version__))
+        statembed.add_field(name=f"Cached messages (in {text})", value=str(len(self.client.cached_messages)))
+        statembed.add_field(name="Python version", value=platform.python_version())
         await ctx.send(embed=statembed)
 
 def setup(client):
