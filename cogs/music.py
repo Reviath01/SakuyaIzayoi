@@ -78,7 +78,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     def __str__(self):
         return '**{0.title}** by **{0.uploader}**'.format(self)
-
+        
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
         loop = loop or asyncio.get_event_loop()
@@ -196,10 +196,10 @@ class VoiceState:
         self._volume = 0.5
         self.skip_votes = set()
 
-        self.audio_player = bot.loop.create_task(self.audio_player_task())
+        self.audioplayer = bot.loop.create_task(self.audioplayer_task())
 
     def __del__(self):
-        self.audio_player.cancel()
+        self.audioplayer.cancel()
 
     @property
     def loop(self):
@@ -218,10 +218,10 @@ class VoiceState:
         self._volume = value
 
     @property
-    def is_playing(self):
+    def isplaying(self):
         return self.voice and self.current
 
-    async def audio_player_task(self):
+    async def audioplayer_task(self):
         while True:
             self.next.clear()
 
@@ -248,7 +248,7 @@ class VoiceState:
     def skip(self):
         self.skip_votes.clear()
 
-        if self.is_playing:
+        if self.isplaying:
             self.voice.stop()
 
     async def stop(self):
@@ -308,7 +308,7 @@ class Music(commands.Cog):
 
     @commands.command(brief="Sets the volume of the player", description="Sets the volume of the player")
     async def volume(self, ctx: commands.Context, *, volume: int):
-        if not ctx.voice_state.is_playing:
+        if not ctx.voice_state.isplaying:
             return await ctx.send('Nothing being played at the moment.')
 
         if 0 > volume > 100:
@@ -318,20 +318,20 @@ class Music(commands.Cog):
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
     @commands.command(description="Shows now playing music", brief="Shows now playing music" , aliases=['current', 'playing'])
-    async def now_playing(self, ctx: commands.Context):
+    async def nowplaying(self, ctx: commands.Context):
         await ctx.send(embed=ctx.voice_state.current.create_embed())
 
     @commands.command(brief="Pauses the currently playing song", description="Pauses the currently playing song")
     @commands.has_permissions(manage_guild=True)
     async def pause(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+        if not ctx.voice_state.isplaying and ctx.voice_state.voice.isplaying():
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
 
     @commands.command(brief="Resumes current music", description="Resumes current music")
     @commands.has_permissions(manage_guild=True)
     async def resume(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
+        if not ctx.voice_state.isplaying and ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
             await ctx.message.add_reaction('⏯')
 
@@ -340,13 +340,13 @@ class Music(commands.Cog):
     async def stop(self, ctx: commands.Context):
         ctx.voice_state.songs.clear()
 
-        if not ctx.voice_state.is_playing:
+        if not ctx.voice_state.isplaying:
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
 
     @commands.command(brief="Skips a song if 3 votes come", description="Skips a song if 3 votes come")
     async def skip(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
+        if not ctx.voice_state.isplaying:
             return await ctx.send('Not playing any music right now...')
 
         voter = ctx.message.author
@@ -404,7 +404,7 @@ class Music(commands.Cog):
 
     @commands.command(brief="Loops the current queue", description="Loops the current queue")
     async def loop(self, ctx: commands.Context):
-        if not ctx.voice_state.is_playing:
+        if not ctx.voice_state.isplaying:
             return await ctx.send('Nothing being played at the moment.')
 
         ctx.voice_state.loop = not ctx.voice_state.loop
@@ -413,7 +413,7 @@ class Music(commands.Cog):
     @commands.command(brief="Plays a song", description="Plays a song")
     async def play(self, ctx: commands.Context, *, search: str):
         if not ctx.voice_state.voice:
-            await ctx.invoke(self._join)
+            await ctx.invoke(self.join)
 
         async with ctx.typing():
             try:
