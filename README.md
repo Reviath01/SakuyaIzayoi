@@ -4,11 +4,20 @@ Sakuya Izayoi is my first python Discord bot project. [Click here to invite](htt
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord.py
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord.py, youtube-dl, PyNaCl
 
 ```bash
 pip install discord.py
 ```
+```bash
+pip install youtube-dl
+```
+
+```bash
+pip install PyNaCl
+```
+
+Also you need ffmpeg on your system *for music commands*
 
 ## Usage
 
