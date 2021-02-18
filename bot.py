@@ -1,7 +1,6 @@
 import discord
 import os
 from discord.ext import commands, tasks
-from itertools import cycle
 import sys
 import json
 
@@ -12,7 +11,6 @@ def get_prefix(client, message):
     return prefixes[str(message.guild.id)]
 
 client = commands.Bot(command_prefix = get_prefix)
-status = cycle(['Prefix: !', 'Reviath'])
 
 @client.event
 async def on_command_error(ctx, error):
@@ -43,13 +41,9 @@ async def on_guild_remove(guild):
 @client.event
 async def on_ready():
     log = client.get_channel(790640302452375562)
-    change_status.start()
+    await client.change_presence(activity=discord.Game("!"))
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
     await log.send('I am ready to use!')
-
-@tasks.loop(seconds=15)
-async def change_status():
-    await client.change_presence(activity=discord.Game(next(status)))
 
 @client.command(brief="Shows my code on gitlab", description="Shows my code on gitlab")
 async def code(ctx):
@@ -107,6 +101,15 @@ async def restart(ctx):
         restart_program()
     else:
         await ctx.send('This command is only for my author.')
+
+@client.command(brief="Author command", description="Author command", hidden = True)
+async def set_presence(ctx, *, presence):
+    if str(ctx.author.id) == "770218429096656917":
+        await ctx.send(f'Setting presence as "{presence}"')
+        await client.change_presence(activity=discord.Game(presence))
+    else:
+        await ctx.send('This command is only for my author.')
+
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
