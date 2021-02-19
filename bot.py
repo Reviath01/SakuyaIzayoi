@@ -3,6 +3,7 @@ import os
 from discord.ext import commands, tasks
 import sys
 import json
+import inspect
 
 def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -56,60 +57,47 @@ async def author(ctx):
     await ctx.send(embed = authorembed)
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def load(ctx, extension):
-    if str(ctx.author.id) == "770218429096656917":
-        client.load_extension(f'cogs.{extension}')
-        await ctx.send(f'Loaded cogs.{extension}.')
-    else:
-        await ctx.send('This command is only for my author.')
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'Loaded cogs.{extension}.')
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def unload(ctx, extension):
-    if str(ctx.author.id) == "770218429096656917":
-        client.unload_extension(f'cogs.{extension}')
-        await ctx.send(f'Unloaded cogs.{extension}.')
-    else:
-        await ctx.send('This command is only for my author.')
+    client.unload_extension(f'cogs.{extension}')
+    await ctx.send(f'Unloaded cogs.{extension}.')
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def reload(ctx, extension):
-    if str(ctx.author.id) == "770218429096656917":
-        client.unload_extension(f'cogs.{extension}')
-        client.load_extension(f'cogs.{extension}')
-        await ctx.send(f'Reloaded cogs.{extension}.')
-    else:
-        await ctx.send('This command is only for my author')
+    client.unload_extension(f'cogs.{extension}')
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'Reloaded cogs.{extension}.')
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def shutdown(ctx):
-    if str(ctx.author.id) == "770218429096656917":
-        await ctx.send('Shuting down!')
-        await client.logout()
-    else:
-        await ctx.send('This command is only for my author.')
+    await ctx.send('Shuting down!')
+    await client.logout()
 
 def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def restart(ctx):
-    if str(ctx.author.id) == "770218429096656917":
-        await ctx.send("Restarting...")
-        log = client.get_channel(790640302452375562)
-        await log.send('Restarting...')
-        restart_program()
-    else:
-        await ctx.send('This command is only for my author.')
+    await ctx.send("Restarting...")
+    log = client.get_channel(790640302452375562)
+    await log.send('Restarting...')
+    restart_program()
 
 @client.command(brief="Author command", description="Author command", hidden = True)
+@commands.is_owner()
 async def set_presence(ctx, *, presence):
-    if str(ctx.author.id) == "770218429096656917":
-        await ctx.send(f'Setting presence as "{presence}"')
-        await client.change_presence(activity=discord.Game(presence))
-    else:
-        await ctx.send('This command is only for my author.')
-
+    await ctx.send(f'Setting presence as "{presence}"')
+    await client.change_presence(activity=discord.Game(presence))
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
