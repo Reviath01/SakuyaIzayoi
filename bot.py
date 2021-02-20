@@ -6,7 +6,7 @@ import json
 import inspect
 import mysql.connector
 
-intents = discord.Intents.all()
+intents = discord.Intents().all()
 intents.members = True
 intents.presences = True
 
@@ -76,7 +76,34 @@ async def on_member_join(member):
             t = f"Welcome to server {member.mention}"
         for x in myresult:
             y = str(x)[:-3][-18:]
-            await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}"))
+            await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}").replace("{discriminator}", f"{member.discriminator}").replace("guild_name", f"{member.guild.name}"))
+    else:
+        return
+
+@client.event
+async def on_member_remove(member):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    mycursor = mydb.cursor()
+    chid = f"SELECT chid FROM leavech WHERE serverid ='{member.guild.id}'"
+    mycursor.execute(chid)
+    myresult = mycursor.fetchall()
+    if myresult:
+        msg = f"SELECT msg FROM leavemsg WHERE serverid ='{member.guild.id}'"
+        mycursor.execute(msg)
+        myresult2 = mycursor.fetchall()
+        if myresult2:
+            for z in myresult2:
+                t = str(z)[:-3][2:]
+        else:
+            t = f"Goodbye {member.mention}"
+        for x in myresult:
+            y = str(x)[:-3][-18:]
+            await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}").replace("{discriminator}", f"{member.discriminator}").replace("guild_name", f"{member.guild.name}"))
     else:
         return
 
@@ -97,26 +124,26 @@ async def author(ctx):
     authorembed = discord.Embed(description="My Author: \n<@!770218429096656917> ([Reviath#0001](https://discord.com/users/770218429096656917))", colour=discord.Colour.purple())
     await ctx.send(embed = authorembed)
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Loaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'Unloaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Reloaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def shutdown(ctx):
     await ctx.send('Shuting down!')
@@ -126,7 +153,7 @@ def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def restart(ctx):
     await ctx.send("Restarting...")
@@ -134,13 +161,13 @@ async def restart(ctx):
     await log.send('Restarting...')
     restart_program()
 
-@client.command(brief="Author command", description="Author command", hidden = True)
+@client.command(brief="Author command", description="Author command")
 @commands.is_owner()
 async def set_presence(ctx, *, presence):
     await ctx.send(f'Setting presence as "{presence}"')
     await client.change_presence(activity=discord.Game(presence))
 
-@client.command(name='eval', pass_context=True)
+@client.command(name='eval', pass_context=True, brief="Author command", description="Author command")
 @commands.is_owner()
 async def eval_(ctx, *, command):
     res = eval(command)
