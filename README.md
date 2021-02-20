@@ -10,7 +10,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord
 pip install discord.py
 ```
 ```bash
-pip install youtube-dl
+pip install youtube_dl
 ```
 
 ```bash
