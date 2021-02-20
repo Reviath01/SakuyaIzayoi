@@ -3,6 +3,10 @@ from discord.ext import commands
 import json
 import mysql.connector
 
+intents = discord.Intents()
+
+intents.members = True
+
 class Moderation(commands.Cog):
 
     def __init__(self, client):
@@ -86,6 +90,7 @@ class Moderation(commands.Cog):
         await ctx.send('Succesfully changed prefix.')
 
     @commands.command(brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
+    @commands.has_permissions(administrator=True)
     async def welcome_channel(self, ctx, channel : discord.TextChannel):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -110,6 +115,7 @@ class Moderation(commands.Cog):
             await ctx.send(f'Setting new welcome channel as {channel.mention}.')
 
     @commands.command(brief="Resets welcome channel.", description="Resets welcome channel.")
+    @commands.has_permissions(administrator=True)
     async def reset_welcome_channel(self, ctx):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -128,6 +134,50 @@ class Moderation(commands.Cog):
             mydb.commit()
         else:
             await ctx.send('Welcome channel is not setted.')
+
+    @commands.command(brief="Resets welcome message.", description="Resets welcome message.")
+    @commands.has_permissions(administrator=True)
+    async def reset_welcome_message(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            await ctx.send('Resetting welcome_message.')
+            reset = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+            mycursor.execute(reset)
+            mydb.commit()
+        else:
+            await ctx.send('Welcome message is not setted.')
+
+    @commands.command(brief="Sets new welcome welcome message.", description="Sets new welcome welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
+    @commands.has_permissions(administrator=True)
+    async def welcome_message(self, ctx, *, message):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        msg = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg)
+        myresult = mycursor.fetchall()
+        if myresult:
+            await ctx.send('Message is already setted, use reset_welcome_message command to reset.')
+            return
+        else:
+            msg2 = f"INSERT INTO welcomemsg (msg, serverid) VALUES (%s, %s)"
+            val = (message, ctx.guild.id)
+            mycursor.execute(msg2, val)
+            mydb.commit()
+            await ctx.send('Setted new message.')
 
 def setup(client):
     client.add_cog(Moderation(client))
