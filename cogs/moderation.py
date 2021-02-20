@@ -57,10 +57,7 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Start a vote.", description="Start a vote.")
     @commands.has_permissions(manage_messages = True)
-    async def start_vote(self, ctx, *, message = None):
-        if message == None:
-            await ctx.send('You need to say why are you starting a vote.')
-            return
+    async def start_vote(self, ctx, *, message):
         voteembed = discord.Embed(colour=discord.Colour.blue(), title=f"Vote started (by {ctx.author.display_name})", description=message)
         msg = await ctx.send(embed = voteembed)
         emoji = '\N{THUMBS UP SIGN}'
@@ -156,7 +153,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Welcome message is not setted.')
 
-    @commands.command(brief="Sets new welcome welcome message.", description="Sets new welcome welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
+    @commands.command(brief="Sets new welcome message.", description="Sets new welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
     async def welcome_message(self, ctx, *, message):
         mydb = mysql.connector.connect(
@@ -178,6 +175,96 @@ class Moderation(commands.Cog):
             mycursor.execute(msg2, val)
             mydb.commit()
             await ctx.send('Setted new message.')
+
+    @commands.command(brief="Sets new leave message.", description="Sets new leave message.(You can use {mention} for mention the user and {username} to see users username.)")
+    @commands.has_permissions(administrator=True)
+    async def leave_message(self, ctx, *, message):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        msg = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg)
+        myresult = mycursor.fetchall()
+        if myresult:
+            await ctx.send('Message is already setted, use reset_leave_message command to reset.')
+            return
+        else:
+            msg2 = f"INSERT INTO leavemsg (msg, serverid) VALUES (%s, %s)"
+            val = (message, ctx.guild.id)
+            mycursor.execute(msg2, val)
+            mydb.commit()
+            await ctx.send('Setted new message.')
+
+    @commands.command(brief="Resets leave message.", description="Resets leave message.")
+    @commands.has_permissions(administrator=True)
+    async def reset_leave_message(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            await ctx.send('Resetting leave_message.')
+            reset = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+            mycursor.execute(reset)
+            mydb.commit()
+        else:
+            await ctx.send('Leave message is not setted.')
+
+    @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.")
+    @commands.has_permissions(administrator=True)
+    async def leave_channel(self, ctx, channel : discord.TextChannel):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT chid FROM leavech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            for x in myresult:
+                y = str(x)[:-3][-18:]
+                await ctx.send(f"Channel is already setted to <#{y}>, use reset_leave_channel command to reset.")
+                return
+        else:
+            sql = "INSERT INTO leavech (chid, serverid) VALUES (%s, %s)"
+            val = (channel.id, ctx.guild.id)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            await ctx.send(f'Setting new leave channel as {channel.mention}.')
+
+    @commands.command(brief="Resets leave channel.", description="Resets leave channel.")
+    @commands.has_permissions(administrator=True)
+    async def reset_leave_channel(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT chid FROM leavech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            await ctx.send('Resetting leave_channel.')
+            reset = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
+            mycursor.execute(reset)
+            mydb.commit()
+        else:
+            await ctx.send('Leave channel is not setted.')
 
 def setup(client):
     client.add_cog(Moderation(client))
