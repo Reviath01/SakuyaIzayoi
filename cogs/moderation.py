@@ -266,5 +266,57 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Leave channel is not setted.')
 
+    @commands.command(brief="Shows server settings.", description="Shows server settings.")
+    async def settings(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT chid FROM leavech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            for x in myresult:
+                leavechannel = f"<#{str(x)[:-3][-18:]}> `({str(x)[:-3][-18:]})`"
+        else:
+            leavechannel = "Not setted"
+
+        msg = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg)
+        myresult2 = mycursor.fetchall()
+        if myresult2:
+            for y in myresult2:
+                leavemessage = str(y)[:-3][2:]
+        else:
+            leavemessage = "Goodbye {mention}"
+
+        msg2 = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg2)
+        myresult3 = mycursor.fetchall()
+        if myresult3:
+            for t in myresult3:
+                welcomemessage = str(t)[:-3][2:]
+        else:
+            welcomemessage = "Welcome to server {mention}"
+
+        welcomech = f"SELECT chid FROM welcomech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(welcomech)
+        myresult4 = mycursor.fetchall()
+        if myresult4:
+            for z in myresult4:
+                welcomechannel = f"<#{str(z)[:-3][-18:]}> `({str(z)[:-3][-18:]})`"
+        else:
+            welcomechannel = "Not setted"
+
+        embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
+        embed.add_field(name="Leave channel", value=f"{leavechannel}")
+        embed.add_field(name="Leave message", value=f"{leavemessage}")
+        embed.add_field(name="Welcome channel", value=f"{welcomechannel}")
+        embed.add_field(name="Welcome message", value=f"{welcomemessage}")
+        await ctx.send(embed=embed)
+
 def setup(client):
     client.add_cog(Moderation(client))
