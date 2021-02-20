@@ -311,12 +311,45 @@ class Moderation(commands.Cog):
         else:
             welcomechannel = "Not setted"
 
+        role = f"SELECT roleid FROM autorole WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(role)
+        myresult5 = mycursor.fetchall()
+        if myresult5:
+            for aa in myresult5:
+                autorole2 = f"<@&{str(aa)[:-3][2:]}> `({str(aa)[:-3][2:]})`"
+        else:
+            autorole2 = "Not setted"
+
         embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
         embed.add_field(name="Leave channel", value=f"{leavechannel}")
         embed.add_field(name="Leave message", value=f"{leavemessage}")
         embed.add_field(name="Welcome channel", value=f"{welcomechannel}")
         embed.add_field(name="Welcome message", value=f"{welcomemessage}")
+        embed.add_field(name="Autorole", value=f"{autorole2}")
         await ctx.send(embed=embed)
+
+    @commands.command(brief="Allows you to set autorole")
+    @commands.has_permissions(administrator=True)
+    async def autorole(self,ctx, role: discord.Role):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        role2 = f"SELECT roleid FROM autorole WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(role2)
+        res = mycursor.fetchall()
+        if res:
+            await ctx.send('Auto role is already setted, use reset_autorole command to reset.')
+            return
+        else:
+            sql = "INSERT INTO autorole (roleid, serverid) VALUES (%s, %s)"
+            val = (role.id, ctx.guild.id)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            await ctx.send('Successfully setted autorole.')
 
 def setup(client):
     client.add_cog(Moderation(client))
