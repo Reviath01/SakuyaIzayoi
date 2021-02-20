@@ -16,11 +16,11 @@ class User(commands.Cog):
     async def on_ready(self):
         print('User commands are loaded!')
 
-    @commands.command(brief="Send's latency of bot", description="Send's latency of bot")
+    @commands.command(brief="Send's latency of bot.", description="Send's latency of bot.")
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round(self.client.latency * 1000)}')
 
-    @commands.command(brief="Send's user information", description="Send's information about user (if you don't mention anyone, it will show yours)")
+    @commands.command(invoke_without_command=True, brief="Send's user information.", description="Send's information about user (if you don't mention anyone, it will show yours).", pass_context=True)
     async def whois(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
@@ -36,12 +36,12 @@ class User(commands.Cog):
         embed.add_field(name="Joined Server On:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
         embed.add_field(name="Roles:", value=", ".join(roles))
         embed.add_field(name="Highest Role:", value=member.top_role.mention)
-        embed.add_field(name="Status", value=str(member.status))
-        embed.add_field(name="Activity", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}")
+        embed.add_field(name="Status", value=str(member.status), inline=True)
+        embed.add_field(name="Activity", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}", inline=True)
         embed.add_field(name="Bot", value=member.bot)
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Fetch the profile picture of a user", description="Fetch the profile picture of a user", aliases=["pfp", "profile", "pp"])
+    @commands.command(brief="Fetch the profile picture of a user.", description="Fetch the profile picture of a user.", aliases=["pfp", "profile", "pp"])
     async def avatar(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
@@ -49,36 +49,36 @@ class User(commands.Cog):
         messageembed.set_image(url=member.avatar_url)
         await ctx.send(embed=messageembed)
 
-    @commands.command(brief="Invite me!", description="My invite link")
+    @commands.command(brief="Invite me!", description="My invite link.")
     async def invite(self, ctx):
-        inviteembed = discord.Embed(colour=discord.Colour.red(), description="[Click here to invite me!](https://discordapp.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)")
+        inviteembed = discord.Embed(colour=discord.Colour.red(), description=f"[Click here to invite me!](https://discordapp.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)")
         await ctx.send(embed=inviteembed)
 
-    @commands.command(brief="Show's all roles", description="Show's role list")
+    @commands.command(brief="Shows all roles.", description="Shows role list.")
     async def roles(self, ctx):
         roles = [role.mention for role in ctx.guild.roles[1:]]
         roles.append('@everyone')
         rolesembed = discord.Embed(colour=discord.Colour.green(), description=", ".join(roles))
         await ctx.send(embed=rolesembed)
 
-    @commands.command(brief="Show my stats", description="Show my stats", pass_context=True)
+    @commands.command(invoke_without_command=True, brief="Shows my stats.", description="Shows my stats.", pass_context=True)
     async def stats(self, ctx):
         current_time = time.time()
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
         statembed = discord.Embed(colour=ctx.author.top_role.colour, title="My stats")
-        statembed.add_field(name="Guild size", value=f"{len(self.client.guilds)}")
-        statembed.add_field(name="Ping", value=f"{round(self.client.latency * 1000)}")
-        statembed.add_field(name="Release", value=f"{os.uname().release}")
-        statembed.add_field(name="Platform", value=f"{os.uname().sysname}")
-        statembed.add_field(name="Machine", value=f"{platform.system()}, {os.uname().machine}")
-        statembed.add_field(name="CPU percent", value=f"{psutil.cpu_percent()}%")
-        statembed.add_field(name="Uptime", value=text)
-        statembed.add_field(name="Category size", value=str(len(self.client.cogs)))
-        statembed.add_field(name="Commands size", value=str(len(self.client.commands)))
-        statembed.add_field(name="Discord.py version", value=str(discord.__version__))
-        statembed.add_field(name=f"Cached messages (in {text})", value=str(len(self.client.cached_messages)))
-        statembed.add_field(name="Python version", value=platform.python_version())
+        statembed.add_field(name="Guild size", value=f"{len(self.client.guilds)}", inline=True)
+        statembed.add_field(name="Ping", value=f"{round(self.client.latency * 1000)}", inline=True)
+        statembed.add_field(name="Release", value=f"{os.uname().release}", inline=True)
+        statembed.add_field(name="Platform", value=f"{os.uname().sysname}", inline=True)
+        statembed.add_field(name="Machine", value=f"{platform.system()}, {os.uname().machine}", inline=True)
+        statembed.add_field(name="CPU percent", value=f"{psutil.cpu_percent()}%", inline=True)
+        statembed.add_field(name="Uptime", value=text, inline=True)
+        statembed.add_field(name="Category size", value=str(len(self.client.cogs)), inline=True)
+        statembed.add_field(name="Commands size", value=str(len(self.client.commands)), inline=True)
+        statembed.add_field(name="Discord.py version", value=str(discord.__version__), inline=True)
+        statembed.add_field(name=f"Cached messages (in {text})", value=str(len(self.client.cached_messages)), inline=True)
+        statembed.add_field(name="Python version", value=platform.python_version(), inline=True)
         await ctx.send(embed=statembed)
 
 def setup(client):

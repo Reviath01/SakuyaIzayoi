@@ -78,7 +78,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     def __str__(self):
         return '**{0.title}** by **{0.uploader}**'.format(self)
-        
+
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
         loop = loop or asyncio.get_event_loop()
@@ -288,7 +288,7 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.send('An error occurred: {}'.format(str(error)))
 
-    @commands.command(description="Joins a voice channel", brief="Joins a voice channel", invoke_without_subcommand=True)
+    @commands.command(description="Joins a voice channel.", brief="Joins a voice channel.", invoke_without_subcommand=True)
     async def join(self, ctx: commands.Context):
         destination = ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -297,7 +297,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(brief="Clears the queue and leaves the voice channel", description="Clears the queue and leaves the voice channel")
+    @commands.command(brief="Clears the queue and leaves the voice channel.", description="Clears the queue and leaves the voice channel.")
     @commands.has_permissions(manage_guild=True)
     async def leave(self, ctx: commands.Context):
         if not ctx.voice_state.voice:
@@ -306,36 +306,36 @@ class Music(commands.Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(brief="Sets the volume of the player", description="Sets the volume of the player")
+    @commands.command(brief="Sets the volume of the player.", description="Sets the volume of the player.")
     async def volume(self, ctx: commands.Context, *, volume: int):
         if not ctx.voice_state.isplaying:
             return await ctx.send('Nothing being played at the moment.')
 
         if 0 > volume > 100:
-            return await ctx.send('Volume must be between 0 and 100')
+            return await ctx.send('Volume must be between 0 and 100.')
 
         ctx.voice_state.volume = volume / 100
         await ctx.send('Volume of the player set to {}%'.format(volume))
 
-    @commands.command(description="Shows now playing music", brief="Shows now playing music" , aliases=['current', 'playing'])
+    @commands.command(description="Shows now playing music.", brief="Shows now playing music." , aliases=['current', 'playing'])
     async def nowplaying(self, ctx: commands.Context):
         await ctx.send(embed=ctx.voice_state.current.create_embed())
 
-    @commands.command(brief="Pauses the currently playing song", description="Pauses the currently playing song")
+    @commands.command(brief="Pauses the currently playing song.", description="Pauses the currently playing song.")
     @commands.has_permissions(manage_guild=True)
     async def pause(self, ctx: commands.Context):
         if not ctx.voice_state.isplaying and ctx.voice_state.voice.isplaying():
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
 
-    @commands.command(brief="Resumes current music", description="Resumes current music")
+    @commands.command(brief="Resumes current music.", description="Resumes current music.")
     @commands.has_permissions(manage_guild=True)
     async def resume(self, ctx: commands.Context):
         if not ctx.voice_state.isplaying and ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
             await ctx.message.add_reaction('⏯')
 
-    @commands.command(brief="Stops the current music", description="Stops the current music")
+    @commands.command(brief="Stops the current music.", description="Stops the current music.")
     @commands.has_permissions(manage_guild=True)
     async def stop(self, ctx: commands.Context):
         ctx.voice_state.songs.clear()
@@ -344,7 +344,7 @@ class Music(commands.Cog):
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
 
-    @commands.command(brief="Skips a song if 3 votes come", description="Skips a song if 3 votes come")
+    @commands.command(brief="Skips a song if 3 votes come.", description="Skips a song if 3 votes come.")
     async def skip(self, ctx: commands.Context):
         if not ctx.voice_state.isplaying:
             return await ctx.send('Not playing any music right now...')
@@ -367,7 +367,7 @@ class Music(commands.Cog):
         else:
             await ctx.send('You have already voted to skip this song.')
 
-    @commands.command(brief="Shows queue", description="Shows queue")
+    @commands.command(brief="Shows queue.", description="Shows queue.")
     async def queue(self, ctx: commands.Context, *, page: int = 1):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Empty queue.')
@@ -386,7 +386,7 @@ class Music(commands.Cog):
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Shuffles the queue", description="Shuffles the queue")
+    @commands.command(brief="Shuffles the queue.", description="Shuffles the queue.")
     async def shuffle(self, ctx: commands.Context):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Empty queue.')
@@ -394,7 +394,7 @@ class Music(commands.Cog):
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction('✅')
 
-    @commands.command(brief="Removes a song from the queue at a given index", description="Removes a song from the queue at a given index")
+    @commands.command(brief="Removes a song from the queue at a given index.", description="Removes a song from the queue at a given index.")
     async def remove(self, ctx: commands.Context, index: int):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Empty queue.')
@@ -402,7 +402,7 @@ class Music(commands.Cog):
         ctx.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
 
-    @commands.command(brief="Loops the current queue", description="Loops the current queue")
+    @commands.command(brief="Loops the current queue.", description="Loops the current queue.")
     async def loop(self, ctx: commands.Context):
         if not ctx.voice_state.isplaying:
             return await ctx.send('Nothing being played at the moment.')
@@ -410,7 +410,7 @@ class Music(commands.Cog):
         ctx.voice_state.loop = not ctx.voice_state.loop
         await ctx.message.add_reaction('✅')
 
-    @commands.command(brief="Plays a song", description="Plays a song")
+    @commands.command(brief="Plays a song.", description="Plays a song.")
     async def play(self, ctx: commands.Context, *, search: str):
         if not ctx.voice_state.voice:
             await ctx.invoke(self.join)
