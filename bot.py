@@ -6,6 +6,10 @@ import json
 import inspect
 import mysql.connector
 
+intents = discord.Intents.all()
+intents.members = True
+intents.presences = True
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -21,7 +25,7 @@ def get_prefix(client, message):
 
     return prefixes[str(message.guild.id)]
 
-client = commands.Bot(command_prefix = get_prefix)
+client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
 async def on_command_error(ctx, error):
@@ -48,6 +52,25 @@ async def on_guild_remove(guild):
 
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
+
+@client.event
+async def on_member_join(member):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    mycursor = mydb.cursor()
+    chid = f"SELECT chid FROM welcomech WHERE serverid ='{member.guild.id}'"
+    mycursor.execute(chid)
+    myresult = mycursor.fetchall()
+    if myresult:
+        for x in myresult:
+            y = str(x)[:-3][-18:]
+            await client.get_channel(int(y)).send(f"{member.mention} welcome to server.")
+    else:
+        return
 
 @client.event
 async def on_ready():
