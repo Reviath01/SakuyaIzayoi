@@ -68,7 +68,7 @@ async def on_member_join(member):
     if myresult:
         for x in myresult:
             y = str(x)[:-3][-18:]
-            await client.get_channel(int(y)).send(f"{member.mention} welcome to server.")
+            await member.guild.get_channel(int(y)).send(f"{member.mention} welcome to server.")
     else:
         return
 
