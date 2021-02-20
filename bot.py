@@ -4,6 +4,16 @@ from discord.ext import commands, tasks
 import sys
 import json
 import inspect
+import mysql.connector
+
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="",
+  database="sakuya"
+)
+
+print(f"Successfully connected MySQL Database: \"{mydb.database}\"")
 
 def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -42,7 +52,7 @@ async def on_guild_remove(guild):
 @client.event
 async def on_ready():
     log = client.get_channel(790640302452375562)
-    await client.change_presence(activity=discord.Game("!"))
+    await client.change_presence(activity=discord.Game("Prefix: !"))
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
     await log.send('I am ready to use!')
 
