@@ -16,6 +16,9 @@ pip install youtube_dl
 ```bash
 pip install PyNaCl
 ```
+```bash
+pip install mysql.connector
+```
 
 Also you need ffmpeg on your system *for music commands*
 
@@ -27,6 +30,10 @@ Clone this project.
 
 ```
 Get your bots token and edit bot.py's client.run('TOKEN') part.  
+```
+
+```
+You need MySQL on your system (If you don't know how to install look https://www.mysql.com/)
 ```
 
 ```
