@@ -66,9 +66,17 @@ async def on_member_join(member):
     mycursor.execute(chid)
     myresult = mycursor.fetchall()
     if myresult:
+        msg = f"SELECT msg FROM welcomemsg WHERE serverid ='{member.guild.id}'"
+        mycursor.execute(msg)
+        myresult2 = mycursor.fetchall()
+        if myresult2:
+            for z in myresult2:
+                t = str(z)[:-3][2:]
+        else:
+            t = f"Welcome to server {member.mention}"
         for x in myresult:
             y = str(x)[:-3][-18:]
-            await member.guild.get_channel(int(y)).send(f"{member.mention} welcome to server.")
+            await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}"))
     else:
         return
 
