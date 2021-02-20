@@ -43,6 +43,13 @@ async def on_guild_join(guild):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
+    log = client.get_channel(790640302452375562)
+    guildjoinembed = discord.Embed(colour=discord.Colour.blue(), description=(f"I am added to {guild.name}"))
+    guildjoinembed.add_field(name="Guilds owner", value=f"{guild.owner.mention} `({guild.owner.display_name}, {guild.owner.id})`")
+    guildjoinembed.add_field(name="Guilds member size", value=f"{guild.member_count}")
+    guildjoinembed.set_thumbnail(url=f"{guild.icon_url}")
+    await log.send(embed=guildjoinembed)
+
 @client.event
 async def on_guild_remove(guild):
     with open('prefixes.json', 'r') as f:
@@ -52,6 +59,13 @@ async def on_guild_remove(guild):
 
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
+
+        log = client.get_channel(790640302452375562)
+        guildleaveembed = discord.Embed(colour=discord.Colour.blue(), description=(f"I have kicked from {guild.name}"))
+        guildleaveembed.add_field(name="Guilds owner", value=f"{guild.owner.mention} `({guild.owner.display_name}, {guild.owner.id})`")
+        guildleaveembed.add_field(name="Guilds member size", value=f"{guild.member_count}")
+        guildleaveembed.set_thumbnail(url=f"{guild.icon_url}")
+        await log.send(embed=guildleaveembed)
 
 @client.event
 async def on_member_join(member):
@@ -77,8 +91,16 @@ async def on_member_join(member):
         for x in myresult:
             y = str(x)[:-3][-18:]
             await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}").replace("{discriminator}", f"{member.discriminator}").replace("guild_name", f"{member.guild.name}"))
-    else:
-        return
+
+    cursor = mydb.cursor()
+    getrole = f"SELECT roleid FROM autorole WHERE serverid ='{member.guild.id}'"
+    cursor.execute(getrole)
+    res = cursor.fetchall()
+    if res:
+        for a in res:
+            b = str(a)[:-3][2:]
+            role2 = discord.utils.get(member.guild.roles, id=int(b))
+            await member.add_roles(role2)
 
 @client.event
 async def on_member_remove(member):
