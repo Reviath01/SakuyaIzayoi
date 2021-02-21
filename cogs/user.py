@@ -2,8 +2,9 @@ import discord
 from discord.ext import commands
 import os
 import psutil
-import discord, datetime, time
+import datetime, time
 import platform
+import sys
 
 start_time = time.time()
 
@@ -69,9 +70,7 @@ class User(commands.Cog):
         statembed = discord.Embed(colour=ctx.author.top_role.colour, title="My stats")
         statembed.add_field(name="Guild size", value=f"{len(self.client.guilds)}", inline=True)
         statembed.add_field(name="Ping", value=f"{round(self.client.latency * 1000)}", inline=True)
-        statembed.add_field(name="Release", value=f"{os.uname().release}", inline=True)
-        statembed.add_field(name="Platform", value=f"{os.uname().sysname}", inline=True)
-        statembed.add_field(name="Machine", value=f"{platform.system()}, {os.uname().machine}", inline=True)
+        statembed.add_field(name="Platform", value=f"{sys.platform}", inline=True)
         statembed.add_field(name="CPU percent", value=f"{psutil.cpu_percent()}%", inline=True)
         statembed.add_field(name="Uptime", value=text, inline=True)
         statembed.add_field(name="Category size", value=str(len(self.client.cogs)), inline=True)
