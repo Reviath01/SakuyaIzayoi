@@ -322,7 +322,7 @@ class Moderation(commands.Cog):
             for y in myresult2:
                 leavemessage = str(y)[:-3][2:]
         else:
-            leavemessage = "Goodbye {mention}"
+            leavemessage = "{mention} left the server."
 
         msg2 = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
         mycursor.execute(msg2)
@@ -351,12 +351,22 @@ class Moderation(commands.Cog):
         else:
             autorole2 = "Not setted"
 
+        settedprefix = f"SELECT prefix FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(settedprefix)
+        myresult6 = mycursor.fetchall()
+        if myresult6:
+            for bb in myresult6:
+                prefix = f"{str(bb)[:-3][2:]}"
+        else:
+            prefix = '!'
+
         embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
         embed.add_field(name="Leave channel", value=f"{leavechannel}")
         embed.add_field(name="Leave message", value=f"{leavemessage}")
         embed.add_field(name="Welcome channel", value=f"{welcomechannel}")
         embed.add_field(name="Welcome message", value=f"{welcomemessage}")
         embed.add_field(name="Autorole", value=f"{autorole2}")
+        embed.add_field(name="Prefix", value=f"{prefix}")
         await ctx.send(embed=embed)
 
     @commands.command(brief="Allows you to set autorole")

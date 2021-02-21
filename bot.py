@@ -118,7 +118,7 @@ async def on_member_remove(member):
             for z in myresult2:
                 t = str(z)[:-3][2:]
         else:
-            t = f"Goodbye {member.mention}"
+            t = f"{member.mention} left the server."
         for x in myresult:
             y = str(x)[:-3][-18:]
             await member.guild.get_channel(int(y)).send(t.replace("{mention}", f"{member.mention}").replace("{username}", f"{member.display_name}").replace("{discriminator}", f"{member.discriminator}").replace("guild_name", f"{member.guild.name}"))
@@ -132,9 +132,9 @@ async def on_ready():
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
     await log.send('I am ready to use!')
 
-@client.command(brief="Shows my code on gitlab", description="Shows my code on gitlab")
-async def code(ctx):
-    gitlabembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here](https://git.randomchars.net/Reviath/sakuya-izayoi)")
+@client.command(brief="Allows you to create issue", description="Allows you to create issue")
+async def issue(ctx):
+    gitlabembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here to create issue on GitLab](https://git.randomchars.net/Reviath/sakuya-izayoi) \n[If you don't know how to use GitLab, you can come to our server and specify the problem.](https://discord.gg/Nvte7RYfqY)")
     await ctx.send(embed=gitlabembed)
 
 @client.command(brief="Shows my author", description="Shows my author")
@@ -142,26 +142,26 @@ async def author(ctx):
     authorembed = discord.Embed(description="My Author: \n<@!770218429096656917> ([Reviath#0001](https://discord.com/users/770218429096656917))", colour=discord.Colour.purple())
     await ctx.send(embed = authorembed)
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Loaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'Unloaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Reloaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def shutdown(ctx):
     await ctx.send('Shuting down!')
@@ -171,7 +171,7 @@ def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def restart(ctx):
     await ctx.send("Restarting...")
@@ -179,13 +179,13 @@ async def restart(ctx):
     await log.send('Restarting...')
     restart_program()
 
-@client.command(brief="Author command", description="Author command")
+@client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def set_presence(ctx, *, presence):
     await ctx.send(f'Setting presence as "{presence}"')
     await client.change_presence(activity=discord.Game(presence))
 
-@client.command(name='eval', pass_context=True, brief="Author command", description="Author command")
+@client.command(name='eval', pass_context=True, brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
 async def eval_(ctx, *, command):
     res = eval(command)
