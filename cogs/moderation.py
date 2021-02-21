@@ -65,13 +65,13 @@ class Moderation(commands.Cog):
         await msg.add_reaction(emoji)
         await msg.add_reaction(emoji2)
 
-    @commands.command(brief="Deletes messages.", description="Deletes messages.")
+    @commands.command(aliases=['purge', 'delete'], brief="Deletes messages.", description="Deletes messages.")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount + 1)
         await ctx.send(f'Cleared {amount} messages.')
 
-    @commands.command(brief="Allows you to set prefix.", description="Allows you to set prefix.")
+    @commands.command(aliases=['prefix', 'setprefix'], brief="Allows you to set prefix.", description="Allows you to set prefix.")
     @commands.has_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
         mydb = mysql.connector.connect(
@@ -117,7 +117,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Prefix is not setted.')
 
-    @commands.command(brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
+    @commands.command(aliases=['welcome_ch', 'welcomech'], brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
     @commands.has_permissions(administrator=True)
     async def welcome_channel(self, ctx, channel : discord.TextChannel):
         mydb = mysql.connector.connect(
@@ -142,7 +142,7 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send(f'Setting new welcome channel as {channel.mention}.')
 
-    @commands.command(brief="Resets welcome channel.", description="Resets welcome channel.")
+    @commands.command(aliases=['reset_welcomech'], brief="Resets welcome channel.", description="Resets welcome channel.")
     @commands.has_permissions(administrator=True)
     async def reset_welcome_channel(self, ctx):
         mydb = mysql.connector.connect(
@@ -163,7 +163,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Welcome channel is not setted.')
 
-    @commands.command(brief="Resets welcome message.", description="Resets welcome message.")
+    @commands.command(aliases=['reset_welcomemsg', 'reset_welcome_msg'], brief="Resets welcome message.", description="Resets welcome message.")
     @commands.has_permissions(administrator=True)
     async def reset_welcome_message(self, ctx):
         mydb = mysql.connector.connect(
@@ -184,7 +184,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Welcome message is not setted.')
 
-    @commands.command(brief="Sets new welcome message.", description="Sets new welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
+    @commands.command(aliases=['welcome_msg', 'welcomemsg'], brief="Sets new welcome message.", description="Sets new welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
     async def welcome_message(self, ctx, *, message):
         mydb = mysql.connector.connect(
@@ -207,14 +207,14 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send('Setted new message.')
 
-    @commands.command(brief="Sets new leave message.", description="Sets new leave message.(You can use {mention} for mention the user and {username} to see users username.)")
+    @commands.command(aliases=['leavemsg', 'leave_msg'], brief="Sets new leave message.", description="Sets new leave message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
     async def leave_message(self, ctx, *, message):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root",
+            user="root", 
             password="",
-            database="sakuya"
+            database="sakuya" 
         )
         mycursor = mydb.cursor()
         msg = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
@@ -230,7 +230,7 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send('Setted new message.')
 
-    @commands.command(brief="Resets leave message.", description="Resets leave message.")
+    @commands.command(brief="Resets leave message.", description="Resets leave message.", aliases=['reset_leavemsg', 'reset_leave_msg'])
     @commands.has_permissions(administrator=True)
     async def reset_leave_message(self, ctx):
         mydb = mysql.connector.connect(
@@ -251,7 +251,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Leave message is not setted.')
 
-    @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.")
+    @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.", aliases=['leave_ch', 'leavech'])
     @commands.has_permissions(administrator=True)
     async def leave_channel(self, ctx, channel : discord.TextChannel):
         mydb = mysql.connector.connect(
@@ -276,7 +276,7 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send(f'Setting new leave channel as {channel.mention}.')
 
-    @commands.command(brief="Resets leave channel.", description="Resets leave channel.")
+    @commands.command(brief="Resets leave channel.", description="Resets leave channel.", aliases=['reset_leave_ch', 'reset_leavech', 'reset_leavechannel'])
     @commands.has_permissions(administrator=True)
     async def reset_leave_channel(self, ctx):
         mydb = mysql.connector.connect(
@@ -297,7 +297,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Leave channel is not setted.')
 
-    @commands.command(brief="Shows server settings.", description="Shows server settings.")
+    @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
     async def settings(self, ctx):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -369,7 +369,7 @@ class Moderation(commands.Cog):
         embed.add_field(name="Prefix", value=f"{prefix}")
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Allows you to set autorole")
+    @commands.command(brief="Allows you to set autorole", aliases=['auto_role'])
     @commands.has_permissions(administrator=True)
     async def autorole(self,ctx, role: discord.Role):
         mydb = mysql.connector.connect(

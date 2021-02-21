@@ -20,7 +20,7 @@ class User(commands.Cog):
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round(self.client.latency * 1000)}')
 
-    @commands.command(invoke_without_command=True, brief="Send's user information.", description="Send's information about user (if you don't mention anyone, it will show yours).", pass_context=True)
+    @commands.command(invoke_without_command=True, brief="Send's user information.", description="Send's information about user (if you don't mention anyone, it will show yours).", pass_context=True, aliases=['userinfo', 'user-info'])
     async def whois(self, ctx, member: discord.Member = None):
         if not member:
             member = ctx.message.author
@@ -54,7 +54,7 @@ class User(commands.Cog):
         inviteembed = discord.Embed(colour=discord.Colour.red(), description=f"[Click here to invite me!](https://discordapp.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)")
         await ctx.send(embed=inviteembed)
 
-    @commands.command(brief="Shows all roles.", description="Shows role list.")
+    @commands.command(brief="Shows all roles.", description="Shows role list.", aliases=['role-list', 'rolelist', 'role_list'])
     async def roles(self, ctx):
         roles = [role.mention for role in ctx.guild.roles[1:]]
         roles.append('@everyone')
