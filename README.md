@@ -16,6 +16,11 @@ pip install youtube_dl
 ```bash
 pip install PyNaCl
 ```
+
+```bash
+pip install psutil
+```
+
 ```bash
 pip install mysql.connector
 ```
