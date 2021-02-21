@@ -3,10 +3,6 @@ from discord.ext import commands
 import json
 import mysql.connector
 
-intents = discord.Intents()
-
-intents.members = True
-
 class Moderation(commands.Cog):
 
     def __init__(self, client):
@@ -18,41 +14,34 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Ban the user.", description="Allow's you to ban the user.")
     @commands.has_permissions(ban_members = True)
-    async def ban(self, ctx, member:discord.User = None, reason = None):
-        if member == None:
-            await ctx.send('You need to mention someone.')
-            return
+    async def ban(self, ctx, member:discord.User, *, reason = None):
         if member == ctx.message.author:
             await ctx.send('You can\'t ban yourself.')
             return
         if reason == None:
             reason = "Unspecified"
         await ctx.guild.ban(member, reason=reason)
-        await ctx.send(f"Banned {member}!")
+        await ctx.send(f"Banned {member.mention}!")
 
     @commands.command(brief="Kick the user.", description="Allow's you to kick the user.")
     @commands.has_permissions(kick_members = True)
-    async def kick(self, ctx, member:discord.User = None, reason = None):
-        if member == None:
-            await ctx.send('You need to mention someone.')
-            return
+    async def kick(self, ctx, member:discord.User, *,reason = None):
         if member == ctx.message.author:
             await ctx.send('You can\'t kick yourself.')
             return
         if reason == None:
             reason = "Unspecified"
         await ctx.guild.kick(member, reason=reason)
-        await ctx.send(f"Kicked {member}!")
+        await ctx.send(f"Kicked {member.mention}!")
 
     @commands.command(brief="Unban the user.", description="Unban's the user.")
     @commands.has_permissions(ban_members = True)
-    async def unban(self, ctx, *, member = None):
-        if member == None:
-            await ctx.send('You need to specify a ID.')
-            return
+    async def unban(self, ctx, member, *, reason = None):
+        if not reason:
+            reason = "Unspecified"
         user = await self.client.fetch_user(member)
-        await ctx.guild.unban(user)
-        await ctx.send(f'Unbanned <@{user.id}>.')
+        await ctx.guild.unban(user, reason=reason)
+        await ctx.send(f'Unbanned {user.mention}.')
         return
 
     @commands.command(brief="Start a vote.", description="Start a vote.")
