@@ -20,10 +20,22 @@ mydb = mysql.connector.connect(
 print(f"Successfully connected MySQL Database: \"{mydb.database}\"")
 
 def get_prefix(client, message):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
-
-    return prefixes[str(message.guild.id)]
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    prefix = f"SELECT prefix FROM prefixes WHERE serverid='{message.guild.id}'"
+    cursor.execute(prefix)
+    res = cursor.fetchall()
+    if res:
+    	for x in res:
+            y = str(x)[:-3][2:]
+    else:
+	    y = str('!')
+    return y
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
@@ -35,14 +47,6 @@ async def on_command_error(ctx, error):
 
 @client.event
 async def on_guild_join(guild):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
-
-    prefixes[str(guild.id)] = '!'
-
-    with open('prefixes.json', 'w') as f:
-        json.dump(prefixes, f, indent=4)
-
     log = client.get_channel(790640302452375562)
     guildjoinembed = discord.Embed(colour=discord.Colour.blue(), description=(f"I am added to {guild.name}"))
     guildjoinembed.add_field(name="Guilds owner", value=f"{guild.owner.mention} `({guild.owner.display_name}, {guild.owner.id})`")
@@ -52,14 +56,6 @@ async def on_guild_join(guild):
 
 @client.event
 async def on_guild_remove(guild):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
-
-    prefixes.pop(str(guild.id))
-
-    with open('prefixes.json', 'w') as f:
-        json.dump(prefixes, f, indent=4)
-
         log = client.get_channel(790640302452375562)
         guildleaveembed = discord.Embed(colour=discord.Colour.blue(), description=(f"I have kicked from {guild.name}"))
         guildleaveembed.add_field(name="Guilds owner", value=f"{guild.owner.mention} `({guild.owner.display_name}, {guild.owner.id})`")

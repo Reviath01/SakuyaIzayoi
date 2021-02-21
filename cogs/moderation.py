@@ -73,18 +73,49 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Allows you to set prefix.", description="Allows you to set prefix.")
     @commands.has_permissions(administrator=True)
-    async def prefix(self, ctx, *, prefix=None):
-        if prefix == None:
-            await ctx.send('You need to send new prefix.')
-            return
-        with open('prefixes.json', 'r') as f:
-            prefixes = json.load(f)
+    async def set_prefix(self, ctx, prefix):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        prefix2 = f"SELECT prefix FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(prefix2)
+        myresult = mycursor.fetchall()
+        if myresult:
+            for x in myresult:
+                y = str(x)[:-3][2:]
+                await ctx.send(f"Prefix is already setted to `{y}` , use reset_prefix command to reset (then you can set again).")
+                return
+        else:
+            sql = "INSERT INTO prefixes (prefix, serverid) VALUES (%s, %s)"
+            val = (prefix, ctx.guild.id)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            await ctx.send(f'Setting prefix as `{prefix}`.')
 
-            prefixes[str(ctx.guild.id)] = prefix
-
-        with open('prefixes.json', 'w') as f:
-            json.dump(prefixes, f, indent=4)
-        await ctx.send('Succesfully changed prefix.')
+    @commands.command(brief="Resets prefix.", description="Resets prefix.")
+    @commands.has_permissions(administrator=True)
+    async def reset_prefix(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        prefix2 = f"SELECT prefix FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(prefix2)
+        myresult = mycursor.fetchall()
+        if myresult:
+            prefix3 = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+            mycursor.execute(prefix3)
+            mydb.commit()
+            await ctx.send('Resetted prefix.')
+        else:
+            await ctx.send('Prefix is not setted.')
 
     @commands.command(brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
     @commands.has_permissions(administrator=True)
