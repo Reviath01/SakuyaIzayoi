@@ -96,5 +96,97 @@ class User(commands.Cog):
         statembed.add_field(name="Python version", value=platform.python_version(), inline=True)
         await ctx.send(embed=statembed)
 
+        @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
+    async def settings(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        chid = f"SELECT chid FROM leavech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(chid)
+        myresult = mycursor.fetchall()
+        if myresult:
+            for x in myresult:
+                leavechannel = f"<#{str(x)[:-3][-18:]}> `({str(x)[:-3][-18:]})`"
+        else:
+            leavechannel = "Not setted"
+
+        msg = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg)
+        myresult2 = mycursor.fetchall()
+        if myresult2:
+            for y in myresult2:
+                leavemessage = str(y)[:-3][2:]
+        else:
+            leavemessage = "{mention} left the server."
+
+        msg2 = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(msg2)
+        myresult3 = mycursor.fetchall()
+        if myresult3:
+            for t in myresult3:
+                welcomemessage = str(t)[:-3][2:]
+        else:
+            welcomemessage = "Welcome to server {mention}"
+
+        welcomech = f"SELECT chid FROM welcomech WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(welcomech)
+        myresult4 = mycursor.fetchall()
+        if myresult4:
+            for z in myresult4:
+                welcomechannel = f"<#{str(z)[:-3][-18:]}> `({str(z)[:-3][-18:]})`"
+        else:
+            welcomechannel = "Not setted"
+
+        role = f"SELECT roleid FROM autorole WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(role)
+        myresult5 = mycursor.fetchall()
+        if myresult5:
+            for aa in myresult5:
+                autorole2 = f"<@&{str(aa)[:-3][2:]}> `({str(aa)[:-3][2:]})`"
+        else:
+            autorole2 = "Not setted"
+
+        settedprefix = f"SELECT prefix FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+        mycursor.execute(settedprefix)
+        myresult6 = mycursor.fetchall()
+        if myresult6:
+            for bb in myresult6:
+                prefix = f"{str(bb)[:-3][2:]}"
+        else:
+            prefix = '!'
+
+        embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
+        embed.add_field(name="Leave channel", value=f"{leavechannel}")
+        embed.add_field(name="Leave message", value=f"{leavemessage}")
+        embed.add_field(name="Welcome channel", value=f"{welcomechannel}")
+        embed.add_field(name="Welcome message", value=f"{welcomemessage}")
+        embed.add_field(name="Autorole", value=f"{autorole2}")
+        embed.add_field(name="Prefix", value=f"{prefix}")
+        await ctx.send(embed=embed)
+    
+    @commands.command(brief="Sets you as afk", description="Sets you as afk")
+    async def afk(self, ctx, *, reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        if reason == None:
+            reason = "AFK"
+        cursor = mydb.cursor()
+        afk2 = "INSERT INTO afk (isafk, memberid) VALUES (%s, %s)"
+        value = ('true', ctx.author.id)
+        cursor.execute(afk2, value)
+        mydb.commit()
+        embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
+        await ctx.send(embed=embed2)
+
+
+
 def setup(client):
     client.add_cog(User(client))
