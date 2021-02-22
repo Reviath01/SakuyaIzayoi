@@ -57,8 +57,11 @@ class Moderation(commands.Cog):
     @commands.command(aliases=['purge', 'delete'], brief="Deletes messages.", description="Deletes messages.")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount : int):
+        if amount < 1:
+            await ctx.send('Amount must be greater than 1')
+            return
         await ctx.channel.purge(limit=amount + 1)
-        await ctx.send(f'Cleared {amount} messages.')
+        await ctx.send(f'Cleared {amount} messages.', delete_after=5)
 
     @commands.command(aliases=['prefix', 'setprefix'], brief="Allows you to set prefix.", description="Allows you to set prefix.")
     @commands.has_permissions(administrator=True)
