@@ -48,12 +48,12 @@ async def on_message(message):
         database="sakuya"
     )
     cursor = mydb.cursor()
-    isafk = f"SELECT isafk FROM afk WHERE memberid ='{message.author.id}'"
+    isafk = f"SELECT isafk FROM afk WHERE memberid ='{message.author.id}' AND guildid ='{message.guild.id}'"
     cursor.execute(isafk)
     res = cursor.fetchall()
     if res:
         await message.channel.send(f'Welcome back {message.author.mention}')
-        removeafk = f"DELETE FROM afk WHERE memberid ='{message.author.id}'"
+        removeafk = f"DELETE FROM afk WHERE memberid ='{message.author.id}' AND guildid ='{message.guild.id}'"
         cursor.execute(removeafk)
         mydb.commit()
     afk2 = f"SELECT memberid FROM afk WHERE isafk ='true'"

@@ -96,7 +96,7 @@ class User(commands.Cog):
         statembed.add_field(name="Python version", value=platform.python_version(), inline=True)
         await ctx.send(embed=statembed)
 
-        @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
+    @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
     async def settings(self, ctx):
         mydb = mysql.connector.connect(
             host="localhost",
@@ -179,8 +179,8 @@ class User(commands.Cog):
         if reason == None:
             reason = "AFK"
         cursor = mydb.cursor()
-        afk2 = "INSERT INTO afk (isafk, memberid) VALUES (%s, %s)"
-        value = ('true', ctx.author.id)
+        afk2 = "INSERT INTO afk (isafk, memberid, guildid) VALUES (%s, %s, %s)"
+        value = ('true', ctx.author.id, ctx.guild.id)
         cursor.execute(afk2, value)
         mydb.commit()
         embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
