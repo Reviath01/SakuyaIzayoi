@@ -43,7 +43,7 @@ class User(commands.Cog):
                 t = str(z)[:-3][2:]
         else:
             t = "This user didn't warned on this guild"
-        embed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at, title=f"User Info - {member}")
+        embed = discord.Embed(colour=member.top_role.colour, timestamp=ctx.message.created_at, title=f"User Info - {member}")
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f"Requested by {ctx.author}")
         embed.add_field(name="ID:", value=member.id)

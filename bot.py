@@ -5,6 +5,7 @@ import sys
 import json
 import inspect
 import mysql.connector
+import datetime
 
 intents = discord.Intents().all()
 intents.members = True
@@ -38,6 +39,32 @@ def get_prefix(client, message):
     return y
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
+
+@client.event
+async def on_message_delete(message):
+    if message.author == client.user:
+        return
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{message.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    channel = message.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Message sent by {message.author.mention} deleted!", colour=message.author.top_role.colour)
+    embed.add_field(name="Message Content",value=message.content, inline=False)
+    embed.add_field(name="Channel",value=f"{message.channel.mention} `({message.channel.name})`", inline=False)
+    embed.add_field(name="User ID: ", value=message.author.id, inline=False)
+    await channel.send(embed=embed)
 
 @client.event
 async def on_message(message):
