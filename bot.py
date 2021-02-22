@@ -41,6 +41,104 @@ def get_prefix(client, message):
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
+async def on_guild_role_create(role):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{role.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = role.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Role created!", colour=role.colour)
+    embed.add_field(name="Role name",value=f"{role.name} ({role.mention})", inline=False)
+    embed.add_field(name="Role ID",value=role.id, inline=False)
+    embed.add_field(name="Role color", value=role.colour, inline=False)
+    await logch.send(embed=embed)
+
+@client.event
+async def on_guild_role_delete(role):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{role.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = role.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Role deleted!", colour=role.colour)
+    embed.add_field(name="Role name",value=f"{role.name}", inline=False)
+    embed.add_field(name="Role ID",value=role.id, inline=False)
+    embed.add_field(name="Role color", value=role.colour, inline=False)
+    await logch.send(embed=embed)
+
+@client.event
+async def on_guild_role_update(before, after):
+    if before = after:
+        return
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = before.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Role updated!", colour=discord.Colour.purple())
+    embed.add_field(name="Role name",value=f"{before.name} => {after.name}", inline=False)
+    embed.add_field(name="Role ID",value=before.id, inline=False)
+    embed.add_field(name="Role color", value=f"{before.colour} => {after.colour}", inline=False)
+    await logch.send(embed=embed)
+
+@client.event
+async def on_guild_channel_update(before, after):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = before.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Channel updated!", colour=discord.Colour.red())
+    embed.add_field(name="Channels old name:",value=before.name, inline=False)
+    embed.add_field(name="Channels new name:",value=after.name, inline=False)
+    embed.add_field(name="Type", value=before.type, inline=False)
+    await logch.send(embed=embed)
+
+@client.event
 async def on_message_delete(message):
     if message.author == client.user:
         return
@@ -59,12 +157,12 @@ async def on_message_delete(message):
             y = str(x)[:-3][2:]
     else:
         return
-    channel = message.guild.get_channel(int(y))
+    logch = message.guild.get_channel(int(y))
     embed = discord.Embed(description=f"Message sent by {message.author.mention} deleted!", colour=message.author.top_role.colour)
     embed.add_field(name="Message Content",value=message.content, inline=False)
     embed.add_field(name="Channel",value=f"{message.channel.mention} `({message.channel.name})`", inline=False)
     embed.add_field(name="User ID: ", value=message.author.id, inline=False)
-    await channel.send(embed=embed)
+    await logch.send(embed=embed)
 
 
 @client.event
