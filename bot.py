@@ -63,6 +63,8 @@ async def on_message(message):
         for x in res:
             aaa = str(x)[:-3][2:]
         if aaa in message.content:
+            if message.author == client.user:
+                return
             await message.channel.send(f'This user is afk now!')
     await client.process_commands(message)
 
