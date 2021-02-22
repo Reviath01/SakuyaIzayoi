@@ -67,6 +67,33 @@ async def on_message_delete(message):
     await channel.send(embed=embed)
 
 @client.event
+async def on_message_edit(before, after):
+    if before.author == client.user:
+        return
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    channel = before.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Message sent by {before.author.mention} edited!", colour=before.author.top_role.colour)
+    embed.add_field(name="Old",value=before.content, inline=False)
+    embed.add_field(name="New", value=after.content, inline=False)
+    embed.add_field(name="Channel",value=f"{before.channel.mention} `({before.channel.name})`", inline=False)
+    embed.add_field(name="User ID: ", value=before.author.id, inline=False)
+    await channel.send(embed=embed)
+
+@client.event
 async def on_message(message):
     mydb = mysql.connector.connect(
         host="localhost",
