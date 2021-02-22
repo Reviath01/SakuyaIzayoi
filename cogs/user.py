@@ -5,6 +5,7 @@ import psutil
 import datetime, time
 import platform
 import sys
+import mysql.connector
 
 start_time = time.time()
 
@@ -27,8 +28,22 @@ class User(commands.Cog):
             member = ctx.message.author
         roles = [role.mention for role in member.roles[1:]]
         roles.append('@everyone')
-        embed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at,
-                          title=f"User Info - {member}")
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        warns3 = f"SELECT warnreason FROM warns WHERE memberid ='{member.id}' AND guildid = '{ctx.guild.id}'"
+        mycursor.execute(warns3)
+        myresult2 = mycursor.fetchall()
+        if myresult2:
+            for z in myresult2:
+                t = str(z)[:-3][2:]
+        else:
+            t = "This user didn't warned on this guild"
+        embed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at, title=f"User Info - {member}")
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f"Requested by {ctx.author}")
         embed.add_field(name="ID:", value=member.id)
@@ -37,9 +52,10 @@ class User(commands.Cog):
         embed.add_field(name="Joined Server On:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
         embed.add_field(name="Roles:", value=", ".join(roles))
         embed.add_field(name="Highest Role:", value=member.top_role.mention)
-        embed.add_field(name="Status", value=str(member.status), inline=True)
-        embed.add_field(name="Activity", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}", inline=True)
-        embed.add_field(name="Bot", value=member.bot)
+        embed.add_field(name="Status:", value=str(member.status), inline=True)
+        embed.add_field(name="Activity:", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}", inline=True)
+        embed.add_field(name="Bot:", value=member.bot)
+        embed.add_field(name="Last Warn:", value=t)
         await ctx.send(embed=embed)
 
     @commands.command(brief="Fetch the profile picture of a user.", description="Fetch the profile picture of a user.", aliases=["pfp", "profile", "pp"])

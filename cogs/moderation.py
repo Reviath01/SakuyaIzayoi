@@ -399,5 +399,22 @@ class Moderation(commands.Cog):
         embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
         await ctx.send(embed=embed2)
 
+    @commands.command(brief="Warns user", description="Warns mentioned user")
+    @commands.has_permissions(ban_members=True)
+    async def warn(self, ctx, member: discord.Member, *, reason):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        cursor = mydb.cursor()
+        warning = "INSERT INTO warns (memberid, warnreason, guildid) VALUES (%s, %s, %s)"
+        values = (member.id, reason, ctx.guild.id)
+        cursor.execute(warning, values)
+        mydb.commit()
+        await ctx.send(f'Warned {member.mention}')
+        await member.send(f'You have been warned on **{ctx.guild.name}** \nWarn reason: {reason}')
+
 def setup(client):
     client.add_cog(Moderation(client))
