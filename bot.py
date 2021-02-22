@@ -40,6 +40,24 @@ def get_prefix(client, message):
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
+async def on_message(message):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    isafk = f"SELECT isafk FROM afk WHERE memberid ='{message.author.id}'"
+    cursor.execute(isafk)
+    res = cursor.fetchall()
+    if res:
+        await message.channel.send(f'Welcome back {message.author.mention}')
+        removeafk = f"DELETE FROM afk WHERE memberid ='{message.author.id}'"
+        cursor.execute(removeafk)
+        mydb.commit()
+
+@client.event
 async def on_command_error(ctx, error):
     log = client.get_channel(790640302452375562)
     await ctx.send(error)

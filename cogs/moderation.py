@@ -381,5 +381,23 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send('Successfully setted autorole.')
 
+    @commands.command(brief="Sets you as afk", description="Sets you as afk")
+    async def afk(self, ctx, *, reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        if reason == None:
+            reason = "AFK"
+        cursor = mydb.cursor()
+        afk2 = "INSERT INTO afk (isafk, memberid) VALUES (%s, %s)"
+        value = ('true', ctx.author.id)
+        cursor.execute(afk2, value)
+        mydb.commit()
+        embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
+        await ctx.send(embed=embed2)
+
 def setup(client):
     client.add_cog(Moderation(client))
