@@ -84,12 +84,36 @@ async def on_guild_channel_delete(channel):
             y = str(x)[:-3][2:]
     else:
         return
-    channel = channel.guild.get_channel(int(y))
+    logch = channel.guild.get_channel(int(y))
     embed = discord.Embed(description=f"Channel deleted!", colour=discord.Colour.red())
     embed.add_field(name="Channel name",value=channel.name, inline=False)
     embed.add_field(name="Channel ID",value=channel.id, inline=False)
     embed.add_field(name="Type", value=channel.type, inline=False)
-    await channel.send(embed=embed)
+    await logch.send(embed=embed)
+
+@client.event
+async def on_guild_channel_create(channel):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{channel.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = channel.guild.get_channel(int(y))
+    embed = discord.Embed(description=f"Channel created!", colour=discord.Colour.red())
+    embed.add_field(name="Channel name",value=f"{channel.name} ({channel.mention})", inline=False)
+    embed.add_field(name="Channel ID",value=channel.id, inline=False)
+    embed.add_field(name="Type", value=channel.type, inline=False)
+    await logch.send(embed=embed)
 
 @client.event
 async def on_message_edit(before, after):
