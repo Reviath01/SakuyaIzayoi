@@ -56,6 +56,15 @@ async def on_message(message):
         removeafk = f"DELETE FROM afk WHERE memberid ='{message.author.id}'"
         cursor.execute(removeafk)
         mydb.commit()
+    afk2 = f"SELECT memberid FROM afk WHERE isafk ='true'"
+    cursor.execute(afk2)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            aaa = str(x)[:-3][2:]
+        if aaa in message.content:
+            await message.channel.send(f'This user is afk now!')
+    await client.process_commands(message)
 
 @client.event
 async def on_command_error(ctx, error):
