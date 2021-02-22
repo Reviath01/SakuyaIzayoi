@@ -245,7 +245,7 @@ async def on_message_edit(before, after):
     embed.add_field(name="Old",value=before.content, inline=False)
     embed.add_field(name="New", value=after.content, inline=False)
     embed.add_field(name="Channel",value=f"{before.channel.mention} `({before.channel.name})`", inline=False)
-    embed.add_field(name="User ID: ", value=before.author.id, inline=False)
+    embed.add_field(name="User ID", value=before.author.id, inline=False)
     await logch.send(embed=embed)
 
 @client.event

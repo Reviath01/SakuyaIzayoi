@@ -159,6 +159,15 @@ class User(commands.Cog):
         else:
             prefix = '!'
 
+        loggingchannel = f"SELECT channelid FROM log WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(loggingchannel)
+        myresult7 = mycursor.fetchall()
+        if myresult7:
+            for xx in myresult7:
+                logchannel = f"<#{str(xx)[:-3][2:]}>"
+        else:
+            logchannel = "Not setted"
+
         embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
         embed.add_field(name="Leave channel", value=f"{leavechannel}")
         embed.add_field(name="Leave message", value=f"{leavemessage}")
@@ -166,6 +175,7 @@ class User(commands.Cog):
         embed.add_field(name="Welcome message", value=f"{welcomemessage}")
         embed.add_field(name="Autorole", value=f"{autorole2}")
         embed.add_field(name="Prefix", value=f"{prefix}")
+        embed.add_field(name="Logging channel", value=f"{logchannel}")
         await ctx.send(embed=embed)
     
     @commands.command(brief="Sets you as afk", description="Sets you as afk")
