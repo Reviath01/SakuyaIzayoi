@@ -265,7 +265,7 @@ async def on_message(message):
         removeafk = f"DELETE FROM afk WHERE memberid ='{message.author.id}' AND guildid ='{message.guild.id}'"
         cursor.execute(removeafk)
         mydb.commit()
-    afk2 = f"SELECT memberid FROM afk WHERE isafk ='true'"
+    afk2 = f"SELECT memberid FROM afk WHERE isafk ='true' AND guildid ='{message.guild.id}'"
     cursor.execute(afk2)
     res = cursor.fetchall()
     if res:
