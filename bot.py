@@ -90,7 +90,7 @@ async def on_guild_role_delete(role):
 
 @client.event
 async def on_guild_role_update(before, after):
-    if before = after:
+    if before == after:
         return
     mydb = mysql.connector.connect(
         host="localhost",
@@ -156,6 +156,8 @@ async def on_message_delete(message):
         for x in res:
             y = str(x)[:-3][2:]
     else:
+        return
+    if not message.content:
         return
     logch = message.guild.get_channel(int(y))
     embed = discord.Embed(description=f"Message sent by {message.author.mention} deleted!", colour=message.author.top_role.colour)
@@ -232,13 +234,19 @@ async def on_message_edit(before, after):
             y = str(x)[:-3][2:]
     else:
         return
-    channel = before.guild.get_channel(int(y))
+    if not before.content:
+        return
+    if not after.content:
+        return
+    if after.content == before.content:
+        return
+    logch = before.guild.get_channel(int(y))
     embed = discord.Embed(description=f"Message sent by {before.author.mention} edited!", colour=before.author.top_role.colour)
     embed.add_field(name="Old",value=before.content, inline=False)
     embed.add_field(name="New", value=after.content, inline=False)
     embed.add_field(name="Channel",value=f"{before.channel.mention} `({before.channel.name})`", inline=False)
     embed.add_field(name="User ID: ", value=before.author.id, inline=False)
-    await channel.send(embed=embed)
+    await logch.send(embed=embed)
 
 @client.event
 async def on_message(message):
