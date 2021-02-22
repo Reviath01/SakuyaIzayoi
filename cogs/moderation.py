@@ -309,7 +309,7 @@ class Moderation(commands.Cog):
             mydb.commit()
             await ctx.send('Successfully setted autorole.')
 
-    @commands.command(brief="Warns user", description="Warns mentioned user")
+    @commands.command(brief="Warns user.", description="Warns mentioned user.")
     @commands.has_permissions(ban_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason):
         mydb = mysql.connector.connect(
@@ -325,6 +325,36 @@ class Moderation(commands.Cog):
         mydb.commit()
         await ctx.send(f'Warned {member.mention}')
         await member.send(f'You have been warned on **{ctx.guild.name}** \nWarn reason: {reason}')
+
+    @commands.command(brief="Allows you to delete all warns for user.", description="Allows you to delete all warns for user.")
+    @commands.has_permissions(administrator=True)
+    async def delete_warns(self, ctx, member : discord.Member):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        cursor = mydb.cursor()
+        deletewarns = f"DELETE FROM warns WHERE memberid ='{member.id}' AND guildid ='{ctx.guild.id}'"
+        cursor.execute(deletewarns)
+        mydb.commit()
+        await ctx.send(f'Deleted all warns for specified user.')
+
+    @commands.command(brief="Deletes all warns on your guild.", description="Deletes all warns on your guild.")
+    @commands.has_permissions(administrator=True)
+    async def delete_all_warns(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        cursor = mydb.cursor()
+        allwarns = f"DELETE FROM warns WHERE guildid ='{ctx.guild.id}'"
+        cursor.execute(allwarns)
+        mydb.commit()
+        await ctx.send('All warns have been resetted.')
 
 def setup(client):
     client.add_cog(Moderation(client))
