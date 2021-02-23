@@ -291,7 +291,7 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Allows you to set autorole", aliases=['auto_role'])
     @commands.has_permissions(administrator=True)
-    async def autorole(self,ctx, role: discord.Role):
+    async def autorole(self,ctx, role: discord.Role = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -303,8 +303,20 @@ class Moderation(commands.Cog):
         mycursor.execute(role2)
         res = mycursor.fetchall()
         if res:
-            await ctx.send('Auto role is already setted, use reset_autorole command to reset.')
-            return
+            if role == None:
+                sql2 = f"DELETE FROM autorole WHERE serverid = '{ctx.guild.id}'"
+                mycursor.execute(sql2)
+                mydb.commit()
+                await ctx.send('Resetted autorole.')
+            else:
+                sql2 = f"DELETE FROM autorole WHERE serverid = '{ctx.guild.id}'"
+                mycursor.execute(sql2)
+                mydb.commit()
+                sql = "INSERT INTO autorole (roleid, serverid) VALUES (%s, %s)"
+                val = (role.id, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send('Successfully setted new autorole.')
         else:
             sql = "INSERT INTO autorole (roleid, serverid) VALUES (%s, %s)"
             val = (role.id, ctx.guild.id)
