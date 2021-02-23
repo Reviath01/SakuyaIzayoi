@@ -132,11 +132,14 @@ async def on_guild_channel_update(before, after):
     else:
         return
     logch = before.guild.get_channel(int(y))
-    embed = discord.Embed(description=f"Channel updated!", colour=discord.Colour.red())
-    embed.add_field(name="Channels old name:",value=before.name, inline=False)
-    embed.add_field(name="Channels new name:",value=after.name, inline=False)
-    embed.add_field(name="Type", value=before.type, inline=False)
-    await logch.send(embed=embed)
+    if before.name != after.name:
+        embed = discord.Embed(description=f"Channel updated!", colour=discord.Colour.red())
+        embed.add_field(name="Channels old name:",value=before.name, inline=False)
+        embed.add_field(name="Channels new name:",value=after.name, inline=False)
+        embed.add_field(name="Type", value=before.type, inline=False)
+        await logch.send(embed=embed)
+    else:
+        return
 
 @client.event
 async def on_message_delete(message):
@@ -163,7 +166,7 @@ async def on_message_delete(message):
     embed = discord.Embed(description=f"Message sent by {message.author.mention} deleted!", colour=message.author.top_role.colour)
     embed.add_field(name="Message Content",value=message.content, inline=False)
     embed.add_field(name="Channel",value=f"{message.channel.mention} `({message.channel.name})`", inline=False)
-    embed.add_field(name="User ID: ", value=message.author.id, inline=False)
+    embed.add_field(name="User ID ", value=message.author.id, inline=False)
     await logch.send(embed=embed)
 
 
