@@ -196,7 +196,5 @@ class User(commands.Cog):
         embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
         await ctx.send(embed=embed2)
 
-
-
 def setup(client):
     client.add_cog(User(client))

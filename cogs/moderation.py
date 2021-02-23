@@ -359,9 +359,9 @@ class Moderation(commands.Cog):
         mydb.commit()
         await ctx.send('All warns have been resetted.')
 
-    @commands.command(brief="Sets logging channel", description="Sets logging channel as mentioned channel")
+    @commands.command(brief="Sets logging channel", description="Sets logging channel as mentioned channel, if you don't mention a channel it will be reset")
     @commands.has_permissions(administrator=True)
-    async def log(self, ctx, channel : discord.TextChannel):
+    async def log(self, ctx, channel : discord.TextChannel = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -372,35 +372,27 @@ class Moderation(commands.Cog):
         ifch = f"SELECT channelid FROM log WHERE guildid ='{ctx.guild.id}'"
         cursor.execute(ifch)
         res = cursor.fetchall()
-        if res:
-            await ctx.send('Log channel is already setted, use reset_log command to reset and set again')
+        if res: 
+            if channel == None:
+                delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
+                cursor.execute(delch)
+                mydb.commit()
+                await ctx.send('Resetted log')
+            else:
+                delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
+                cursor.execute(delch)
+                mydb.commit()
+                setch = "INSERT INTO log (channelid, guildid) VALUES (%s, %s)"
+                val = (channel.id, ctx.guild.id)
+                cursor.execute(setch, val)
+                mydb.commit()
+                await ctx.send(f'Setting new log as {channel.mention}')
             return
         setch = "INSERT INTO log (channelid, guildid) VALUES (%s, %s)"
         val = (channel.id, ctx.guild.id)
         cursor.execute(setch, val)
         mydb.commit()
         await ctx.send(f'Setted log channel as {channel.mention}')
-
-    @commands.command(brief="Allows you to reset log channel", description="Allows you to reset log channel")
-    @commands.has_permissions(administrator=True)
-    async def reset_log(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        cursor = mydb.cursor()
-        ifch = f"SELECT channelid FROM log WHERE guildid ='{ctx.guild.id}'"
-        cursor.execute(ifch)
-        res = cursor.fetchall()
-        if res:
-            delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
-            cursor.execute(delch)
-            mydb.commit()
-            await ctx.send('Resetted log.')
-        else:
-            await ctx.send('Log is not setted.')
 
 def setup(client):
     client.add_cog(Moderation(client))
