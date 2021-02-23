@@ -245,7 +245,7 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.", aliases=['leave_ch', 'leavech'])
     @commands.has_permissions(administrator=True)
-    async def leave_channel(self, ctx, channel : discord.TextChannel):
+    async def leave_channel(self, ctx, channel : discord.TextChannel = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -257,37 +257,26 @@ class Moderation(commands.Cog):
         mycursor.execute(chid)
         myresult = mycursor.fetchall()
         if myresult:
-            for x in myresult:
-                y = str(x)[:-3][-18:]
-                await ctx.send(f"Channel is already setted to <#{y}>, use reset_leave_channel command to reset.")
-                return
+            if channel == None:
+                dltch = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dltch)
+                mydb.commit()
+                await ctx.send('Resetted leave channel')
+            else:
+                delch = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(delch)
+                mydb.commit()
+                sql = "INSERT INTO leavech (chid, serverid) VALUES (%s, %s)"
+                val = (channel.id, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send(f'Setting new leave channel as {channel.mention}.')
         else:
             sql = "INSERT INTO leavech (chid, serverid) VALUES (%s, %s)"
             val = (channel.id, ctx.guild.id)
             mycursor.execute(sql, val)
             mydb.commit()
-            await ctx.send(f'Setting new leave channel as {channel.mention}.')
-
-    @commands.command(brief="Resets leave channel.", description="Resets leave channel.", aliases=['reset_leave_ch', 'reset_leavech', 'reset_leavechannel'])
-    @commands.has_permissions(administrator=True)
-    async def reset_leave_channel(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        mycursor = mydb.cursor()
-        chid = f"SELECT chid FROM leavech WHERE serverid ='{ctx.guild.id}'"
-        mycursor.execute(chid)
-        myresult = mycursor.fetchall()
-        if myresult:
-            await ctx.send('Resetting leave_channel.')
-            reset = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
-            mycursor.execute(reset)
-            mydb.commit()
-        else:
-            await ctx.send('Leave channel is not setted.')
+            await ctx.send(f'Setting leave channel as {channel.mention}.')
 
     @commands.command(brief="Allows you to set autorole", aliases=['auto_role'])
     @commands.has_permissions(administrator=True)
