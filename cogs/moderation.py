@@ -65,7 +65,7 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=['prefix', 'setprefix'], brief="Allows you to set prefix.", description="Allows you to set prefix.")
     @commands.has_permissions(administrator=True)
-    async def set_prefix(self, ctx, prefix):
+    async def set_prefix(self, ctx, prefix = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -77,41 +77,33 @@ class Moderation(commands.Cog):
         mycursor.execute(prefix2)
         myresult = mycursor.fetchall()
         if myresult:
-            for x in myresult:
-                y = str(x)[:-3][2:]
-                await ctx.send(f"Prefix is already setted to `{y}` , use reset_prefix command to reset (then you can set again).")
-                return
+            if prefix == None:
+                dlt = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                await ctx.send('Resetted prefix.')
+            else:
+                dlt = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                sql = "INSERT INTO prefixes (prefix, serverid) VALUES (%s, %s)"
+                val = (prefix, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send(f'Setted new prefix as {prefix}.')                
         else:
+            if prefix == None:
+                await ctx.send('You need to specify new prefix.')
+                return
             sql = "INSERT INTO prefixes (prefix, serverid) VALUES (%s, %s)"
             val = (prefix, ctx.guild.id)
             mycursor.execute(sql, val)
             mydb.commit()
-            await ctx.send(f'Setting prefix as `{prefix}`.')
-
-    @commands.command(brief="Resets prefix.", description="Resets prefix.")
-    @commands.has_permissions(administrator=True)
-    async def reset_prefix(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        mycursor = mydb.cursor()
-        prefix2 = f"SELECT prefix FROM prefixes WHERE serverid ='{ctx.guild.id}'"
-        mycursor.execute(prefix2)
-        myresult = mycursor.fetchall()
-        if myresult:
-            prefix3 = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
-            mycursor.execute(prefix3)
-            mydb.commit()
-            await ctx.send('Resetted prefix.')
-        else:
-            await ctx.send('Prefix is not setted.')
+            await ctx.send(f'Setted prefix as {prefix}.')
 
     @commands.command(aliases=['welcome_ch', 'welcomech'], brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
     @commands.has_permissions(administrator=True)
-    async def welcome_channel(self, ctx, channel : discord.TextChannel):
+    async def welcome_channel(self, ctx, channel : discord.TextChannel = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -123,62 +115,31 @@ class Moderation(commands.Cog):
         mycursor.execute(chid)
         myresult = mycursor.fetchall()
         if myresult:
-            for x in myresult:
-                y = str(x)[:-3][-18:]
-                await ctx.send(f"Channel is already setted to <#{y}>, use reset_welcome_channel command to reset.")
-                return
+            if channel == None:
+                dlt = f"DELETE FROM welcomech WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                await ctx.send('Resetted welcome.channel.')
+            else:
+                dlt = f"DELETE FROM welcomech WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
+                val = (channel.id, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send(f'Setted new welcome.channel as {channel.mention}.')
+                
         else:
             sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
             val = (channel.id, ctx.guild.id)
             mycursor.execute(sql, val)
             mydb.commit()
-            await ctx.send(f'Setting new welcome channel as {channel.mention}.')
-
-    @commands.command(aliases=['reset_welcomech'], brief="Resets welcome channel.", description="Resets welcome channel.")
-    @commands.has_permissions(administrator=True)
-    async def reset_welcome_channel(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        mycursor = mydb.cursor()
-        chid = f"SELECT chid FROM welcomech WHERE serverid ='{ctx.guild.id}'"
-        mycursor.execute(chid)
-        myresult = mycursor.fetchall()
-        if myresult:
-            await ctx.send('Resetting welcome_channel.')
-            reset = f"DELETE FROM welcomech WHERE serverid ='{ctx.guild.id}'"
-            mycursor.execute(reset)
-            mydb.commit()
-        else:
-            await ctx.send('Welcome channel is not setted.')
-
-    @commands.command(aliases=['reset_welcomemsg', 'reset_welcome_msg'], brief="Resets welcome message.", description="Resets welcome message.")
-    @commands.has_permissions(administrator=True)
-    async def reset_welcome_message(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        mycursor = mydb.cursor()
-        chid = f"SELECT msg FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
-        mycursor.execute(chid)
-        myresult = mycursor.fetchall()
-        if myresult:
-            await ctx.send('Resetting welcome_message.')
-            reset = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
-            mycursor.execute(reset)
-            mydb.commit()
-        else:
-            await ctx.send('Welcome message is not setted.')
+            await ctx.send(f'Setting welcome channel as {channel.mention}.')
 
     @commands.command(aliases=['welcome_msg', 'welcomemsg'], brief="Sets new welcome message.", description="Sets new welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
-    async def welcome_message(self, ctx, *, message):
+    async def welcome_message(self, ctx, *, message = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -190,18 +151,30 @@ class Moderation(commands.Cog):
         mycursor.execute(msg)
         myresult = mycursor.fetchall()
         if myresult:
-            await ctx.send('Message is already setted, use reset_welcome_message command to reset.')
-            return
+            if message == None:
+                msg3 = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(msg3)
+                mydb.commit()
+                await ctx.send('Resetted welcome.message.')
+            else:
+                msg4 = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(msg4)
+                mydb.commit()
+                msg2 = "INSERT INTO welcomemsg (msg, serverid) VALUES (%s, %s)"
+                val = (message, ctx.guild.id)
+                mycursor.execute(msg2, val)
+                mydb.commit()
+                await ctx.send('Setted new welcome.message.')
         else:
-            msg2 = f"INSERT INTO welcomemsg (msg, serverid) VALUES (%s, %s)"
+            msg2 = "INSERT INTO welcomemsg (msg, serverid) VALUES (%s, %s)"
             val = (message, ctx.guild.id)
             mycursor.execute(msg2, val)
             mydb.commit()
-            await ctx.send('Setted new message.')
+            await ctx.send('Setted welcome.message.')
 
     @commands.command(aliases=['leavemsg', 'leave_msg'], brief="Sets new leave message.", description="Sets new leave message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
-    async def leave_message(self, ctx, *, message):
+    async def leave_message(self, ctx, *, message = None):
         mydb = mysql.connector.connect(
             host="localhost",
             user="root", 
@@ -213,35 +186,26 @@ class Moderation(commands.Cog):
         mycursor.execute(msg)
         myresult = mycursor.fetchall()
         if myresult:
-            await ctx.send('Message is already setted, use reset_leave_message command to reset.')
-            return
+            if message == None:
+                dlt = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                await ctx.send('Resetted leave.message.')
+            else:
+                dlt = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
+                mycursor.execute(dlt)
+                mydb.commit()
+                msg2 = "INSERT INTO leavemsg (msg, serverid) VALUES (%s, %s)"
+                val = (message, ctx.guild.id)
+                mycursor.execute(msg2, val)
+                mydb.commit()
+                await ctx.send(f'Setted new leave.message.')
         else:
-            msg2 = f"INSERT INTO leavemsg (msg, serverid) VALUES (%s, %s)"
+            msg2 = "INSERT INTO leavemsg (msg, serverid) VALUES (%s, %s)"
             val = (message, ctx.guild.id)
             mycursor.execute(msg2, val)
             mydb.commit()
-            await ctx.send('Setted new message.')
-
-    @commands.command(brief="Resets leave message.", description="Resets leave message.", aliases=['reset_leavemsg', 'reset_leave_msg'])
-    @commands.has_permissions(administrator=True)
-    async def reset_leave_message(self, ctx):
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="sakuya"
-        )
-        mycursor = mydb.cursor()
-        chid = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
-        mycursor.execute(chid)
-        myresult = mycursor.fetchall()
-        if myresult:
-            await ctx.send('Resetting leave_message.')
-            reset = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
-            mycursor.execute(reset)
-            mydb.commit()
-        else:
-            await ctx.send('Leave message is not setted.')
+            await ctx.send('Setted leave.message.')
 
     @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.", aliases=['leave_ch', 'leavech'])
     @commands.has_permissions(administrator=True)
