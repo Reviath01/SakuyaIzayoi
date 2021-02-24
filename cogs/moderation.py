@@ -15,6 +15,22 @@ class Moderation(commands.Cog):
     @commands.command(brief="Ban the user.", description="Allow's you to ban the user.")
     @commands.has_permissions(ban_members = True)
     async def ban(self, ctx, member:discord.User, *, reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "ban":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if member == ctx.message.author:
             await ctx.send('You can\'t ban yourself.')
             return
@@ -26,6 +42,22 @@ class Moderation(commands.Cog):
     @commands.command(brief="Kick the user.", description="Allow's you to kick the user.")
     @commands.has_permissions(kick_members = True)
     async def kick(self, ctx, member:discord.User, *,reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "kick":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if member == ctx.message.author:
             await ctx.send('You can\'t kick yourself.')
             return
@@ -37,6 +69,22 @@ class Moderation(commands.Cog):
     @commands.command(brief="Unban the user.", description="Unban's the user.")
     @commands.has_permissions(ban_members = True)
     async def unban(self, ctx, member, *, reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "unban":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if not reason:
             reason = "Unspecified"
         user = await self.client.fetch_user(member)
@@ -47,6 +95,22 @@ class Moderation(commands.Cog):
     @commands.command(brief="Start a vote.", description="Start a vote.")
     @commands.has_permissions(manage_messages = True)
     async def start_vote(self, ctx, *, message):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "start_vote":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         voteembed = discord.Embed(colour=discord.Colour.blue(), title=f"Vote started (by {ctx.author.display_name})", description=message)
         msg = await ctx.send(embed = voteembed)
         emoji = '\N{THUMBS UP SIGN}'
@@ -57,6 +121,22 @@ class Moderation(commands.Cog):
     @commands.command(aliases=['purge', 'delete'], brief="Deletes messages.", description="Deletes messages.")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount : int):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "clear":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if amount < 1:
             await ctx.send('Amount must be greater than 1')
             return
@@ -286,6 +366,22 @@ class Moderation(commands.Cog):
             password="",
             database="sakuya"
         )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "warn":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
         cursor = mydb.cursor()
         warning = "INSERT INTO warns (memberid, warnreason, guildid) VALUES (%s, %s, %s)"
         values = (member.id, reason, ctx.guild.id)
@@ -358,6 +454,70 @@ class Moderation(commands.Cog):
         cursor.execute(setch, val)
         mydb.commit()
         await ctx.send(f'Setted log channel as {channel.mention}')
+
+    @commands.command(brief="Allows you to disable command", description="Allows you to disable command")
+    @commands.has_permissions(administrator=True)
+    async def disable(self, ctx, command):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for z in res:
+                t = str(z)[:-3][2:]
+            if t == command: 
+                await ctx.send('This command is already disabled.')
+                return
+            else:
+                for x in self.client.commands:
+                    y = str(x)
+                if y != command:
+                    await ctx.send(f'I can\'t find `{command}`')
+                    return
+                else:
+                    sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
+                    val = (command, ctx.guild.id)
+                    mycursor.execute(sql2, val)
+                    mydb.commit()
+                    await ctx.send(f'Disabled {command}.')
+        else:
+            sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
+            val = (command, ctx.guild.id)
+            mycursor.execute(sql2, val)
+            mydb.commit()
+            await ctx.send(f'Disabled {command}.')
+    
+    @commands.command(brief="Allows you to enable command", description="Allows you to enable command")
+    @commands.has_permissions(administrator=True)
+    async def enable(self, ctx, command):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for z in res:
+                t = str(z)[:-3][2:]
+            if t != command: 
+                await ctx.send(f'This command is already enabled or I can\'t find command {command}.')
+                return
+            sql2 = f"DELETE FROM disabledcommands WHERE commandname ='{command}' AND guildid ='{ctx.guild.id}'"
+            mycursor.execute(sql2)
+            mydb.commit()
+            await ctx.send(f'Enabled {command}.')
+        else:
+            await ctx.send('There is no disabled commands on this guild')
 
 def setup(client):
     client.add_cog(Moderation(client))
