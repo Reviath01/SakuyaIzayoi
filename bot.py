@@ -8,8 +8,6 @@ import mysql.connector
 import datetime
 
 intents = discord.Intents().all()
-intents.members = True
-intents.presences = True
 
 mydb = mysql.connector.connect(
   host="localhost",
