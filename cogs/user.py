@@ -20,10 +20,42 @@ class User(commands.Cog):
 
     @commands.command(brief="Send's latency of bot.", description="Send's latency of bot.")
     async def ping(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "ping":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         await ctx.send(f'Pong! {round(self.client.latency * 1000)}')
 
     @commands.command(invoke_without_command=True, brief="Send's user information.", description="Send's information about user (if you don't mention anyone, it will show yours).", pass_context=True, aliases=['userinfo', 'user-info'])
     async def whois(self, ctx, member: discord.Member = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "whois":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if not member:
             member = ctx.message.author
         roles = [role.mention for role in member.roles[1:]]
@@ -60,6 +92,22 @@ class User(commands.Cog):
 
     @commands.command(brief="Fetch the profile picture of a user.", description="Fetch the profile picture of a user.", aliases=["pfp", "profile", "pp"])
     async def avatar(self, ctx, member: discord.Member = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "avatar":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         if not member:
             member = ctx.message.author
         messageembed = discord.Embed(colour=ctx.author.top_role.colour, timestamp=ctx.message.created_at, title=f"Avatar of {member}")
@@ -73,6 +121,22 @@ class User(commands.Cog):
 
     @commands.command(brief="Shows all roles.", description="Shows role list.", aliases=['role-list', 'rolelist', 'role_list'])
     async def roles(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "roles":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         roles = [role.mention for role in ctx.guild.roles[1:]]
         roles.append('@everyone')
         rolesembed = discord.Embed(colour=discord.Colour.green(), description=", ".join(roles))
@@ -80,6 +144,22 @@ class User(commands.Cog):
 
     @commands.command(invoke_without_command=True, brief="Shows my stats.", description="Shows my stats.", pass_context=True)
     async def stats(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "stats":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         current_time = time.time()
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
@@ -98,6 +178,22 @@ class User(commands.Cog):
 
     @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
     async def settings(self, ctx):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "settings":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -168,6 +264,14 @@ class User(commands.Cog):
         else:
             logchannel = "Not setted"
 
+        cmd = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(cmd)
+        myresult8 = mycursor.fetchall()
+        if myresult8:
+            disabledcmds = len(myresult8)
+        else:
+            disabledcmds = "There is no commands disabled"
+
         embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
         embed.add_field(name="Leave channel", value=f"{leavechannel}")
         embed.add_field(name="Leave message", value=f"{leavemessage}")
@@ -176,10 +280,27 @@ class User(commands.Cog):
         embed.add_field(name="Autorole", value=f"{autorole2}")
         embed.add_field(name="Prefix", value=f"{prefix}")
         embed.add_field(name="Logging channel", value=f"{logchannel}")
+        embed.add_field(name="Disabled commands size", value=f"{disabledcmds}")
         await ctx.send(embed=embed)
     
     @commands.command(brief="Sets you as afk", description="Sets you as afk")
     async def afk(self, ctx, *, reason = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT commandname FROM disabledcommands WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+                if y == "afk":
+                    await ctx.send('This command is disabled on this guild.')
+                    return
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
