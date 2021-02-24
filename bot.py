@@ -88,8 +88,6 @@ async def on_guild_role_delete(role):
 
 @client.event
 async def on_guild_role_update(before, after):
-    if before == after:
-        return
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -106,10 +104,19 @@ async def on_guild_role_update(before, after):
     else:
         return
     logch = before.guild.get_channel(int(y))
-    embed = discord.Embed(description=f"Role updated!", colour=discord.Colour.purple())
-    embed.add_field(name="Role name",value=f"{before.name} => {after.name}", inline=False)
-    embed.add_field(name="Role ID",value=before.id, inline=False)
-    embed.add_field(name="Role color", value=f"{before.colour} => {after.colour}", inline=False)
+    if before.name == after.name:
+        if before.colour == after.colour:
+            return
+        else:
+            embed = discord.Embed(description=f"Role updated!", colour=discord.Colour.purple())
+            embed.add_field(name="Role name",value=f"{before.name} => {after.name}", inline=False)
+            embed.add_field(name="Role",value=f"{before.mention} `({before.id})`", inline=False)
+            embed.add_field(name="Role color", value=f"{before.colour} => {after.colour}", inline=False)
+    else:
+        embed = discord.Embed(description=f"Role updated!", colour=discord.Colour.purple())
+        embed.add_field(name="Role name",value=f"{before.name} => {after.name}", inline=False)
+        embed.add_field(name="Role",value=f"{before.mention} `({before.id})`", inline=False)
+        embed.add_field(name="Role color", value=f"{before.colour} => {after.colour}", inline=False)
     await logch.send(embed=embed)
 
 @client.event
