@@ -170,7 +170,7 @@ class Moderation(commands.Cog):
                 val = (prefix, ctx.guild.id)
                 mycursor.execute(sql, val)
                 mydb.commit()
-                await ctx.send(f'Setted new prefix as {prefix}.')                
+                await ctx.send(f'Setted new prefix as {prefix}.')
         else:
             if prefix == None:
                 await ctx.send('You need to specify new prefix.')
@@ -209,7 +209,7 @@ class Moderation(commands.Cog):
                 mycursor.execute(sql, val)
                 mydb.commit()
                 await ctx.send(f'Setted new welcome.channel as {channel.mention}.')
-                
+
         else:
             sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
             val = (channel.id, ctx.guild.id)
@@ -257,9 +257,9 @@ class Moderation(commands.Cog):
     async def leave_message(self, ctx, *, message = None):
         mydb = mysql.connector.connect(
             host="localhost",
-            user="root", 
+            user="root",
             password="",
-            database="sakuya" 
+            database="sakuya"
         )
         mycursor = mydb.cursor()
         msg = f"SELECT msg FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
@@ -433,7 +433,7 @@ class Moderation(commands.Cog):
         ifch = f"SELECT channelid FROM log WHERE guildid ='{ctx.guild.id}'"
         cursor.execute(ifch)
         res = cursor.fetchall()
-        if res: 
+        if res:
             if channel == None:
                 delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
                 cursor.execute(delch)
@@ -471,7 +471,7 @@ class Moderation(commands.Cog):
         if res:
             for z in res:
                 t = str(z)[:-3][2:]
-            if t == command: 
+            if t == command:
                 await ctx.send('This command is already disabled.')
                 return
             else:
@@ -492,7 +492,7 @@ class Moderation(commands.Cog):
             mycursor.execute(sql2, val)
             mydb.commit()
             await ctx.send(f'Disabled {command}.')
-    
+
     @commands.command(brief="Allows you to enable command", description="Allows you to enable command")
     @commands.has_permissions(administrator=True)
     async def enable(self, ctx, command):
@@ -509,7 +509,7 @@ class Moderation(commands.Cog):
         if res:
             for z in res:
                 t = str(z)[:-3][2:]
-            if t != command: 
+            if t != command:
                 await ctx.send(f'This command is already enabled or I can\'t find command {command}.')
                 return
             sql2 = f"DELETE FROM disabledcommands WHERE commandname ='{command}' AND guildid ='{ctx.guild.id}'"
@@ -519,5 +519,64 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('There is no disabled commands on this guild')
 
+    @commands.command(brief="Allows you to set muted role", description="Allows you to set muted role")
+    @commands.has_permissions(administrator=True)
+    async def muted_role(self, ctx, role: discord.Role = None):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT role FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            if role == None:
+                sql2 = f"DELETE FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+                mycursor.execute(sql2)
+                mydb.commit()
+                await ctx.send('Resetted muted role.')
+                return
+            else:
+                sql3 = f"DELETE FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+                mycursor.execute(sql3)
+                mydb.commit()
+                sql4 = f"INSERT INTO mutedroles (role, guildid) VALUES ({role.id}, {ctx.guild.id})"
+                mycursor.execute(sql4)
+                await ctx.send('Setted new muted role.')
+                mydb.commit()
+                return
+        if role == None:
+            await ctx.send('You need to mention a role.')
+            return
+        else:
+            sql5 = f"INSERT INTO mutedroles (role, guildid) VALUES ({role.id}, {ctx.guild.id})"
+            mycursor.execute(sql5)
+            mydb.commit()
+            await ctx.send('Setted muted role.')
+
+    @commands.command(brief="Allows you to mute someone.", description="Gives setted muted role (with `muted_role` command) to user.")
+    @commands.has_permissions(kick_members=True)
+    async def mute(self, ctx, user: discord.Member):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT role FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+            role3 = discord.utils.get(ctx.guild.roles, id=int(y))
+            await user.add_roles(role3)
+            await ctx.send(f'Muted {user.mention}.')
+        else:
+            await ctx.send('Muted role is not setted (Use !muted_role command to set).')
 def setup(client):
     client.add_cog(Moderation(client))
