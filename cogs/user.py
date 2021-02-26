@@ -276,6 +276,15 @@ class User(commands.Cog):
         else:
             disabledcmds = "There is no commands disabled"
 
+        getmutedrole = f"SELECT role FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(getmutedrole)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                mutedrole = f"<@&{str(x)[:-3][2:]}> `({str(x)[:-3][2:]})`"
+        else:
+            mutedrole = "Not setted"
+
         embed = discord.Embed(colour=discord.Colour.red(), description=f"Settings of **{ctx.guild.name}**")
         embed.add_field(name="Leave channel", value=f"{leavechannel}")
         embed.add_field(name="Leave message", value=f"{leavemessage}")
@@ -285,8 +294,9 @@ class User(commands.Cog):
         embed.add_field(name="Prefix", value=f"{prefix}")
         embed.add_field(name="Logging channel", value=f"{logchannel}")
         embed.add_field(name="Disabled commands size", value=f"{disabledcmds}")
+        embed.add_field(name="Muted role", value=f"{mutedrole}")
         await ctx.send(embed=embed)
-    
+
     @commands.command(brief="Sets you as afk", description="Sets you as afk")
     async def afk(self, ctx, *, reason = None):
         mydb = mysql.connector.connect(
