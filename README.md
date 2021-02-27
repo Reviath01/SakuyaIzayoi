@@ -9,13 +9,6 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord
 ```bash
 pip install discord.py
 ```
-```bash
-pip install youtube_dl
-```
-
-```bash
-pip install PyNaCl
-```
 
 ```bash
 pip install psutil
@@ -24,8 +17,6 @@ pip install psutil
 ```bash
 pip install mysql.connector
 ```
-
-Also you need ffmpeg on your system *for music commands*
 
 ## Usage
 
@@ -42,7 +33,7 @@ You need MySQL on your system (If you don't know how to install look https://www
 ```
 
 ```
-Type "python bot.py" on terminal
+Type "python bot.py" on terminal (if you are using Windows type python3 bot.py)
 ```
 
 ## Author
