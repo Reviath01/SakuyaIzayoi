@@ -574,6 +574,10 @@ class Moderation(commands.Cog):
             for x in res:
                 y = str(x)[:-3][2:]
             role3 = discord.utils.get(ctx.guild.roles, id=int(y))
+            for x in user.roles:
+                if x == role3:
+                    await ctx.send('This user is already muted.')
+                    return
             await user.add_roles(role3)
             await ctx.send(f'Muted {user.mention}.')
         else:
