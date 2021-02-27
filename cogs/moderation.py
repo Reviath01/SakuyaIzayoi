@@ -578,5 +578,32 @@ class Moderation(commands.Cog):
             await ctx.send(f'Muted {user.mention}.')
         else:
             await ctx.send('Muted role is not setted (Use !muted_role command to set).')
+
+    @commands.command(brief="Allows you to ummute someone.", description="Removes setted muted role (with `muted_role` command) from user.")
+    @commands.has_permissions(kick_members=True)
+    async def unmute(self, ctx, user: discord.Member):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="sakuya"
+        )
+        mycursor = mydb.cursor()
+        sql = f"SELECT role FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
+        mycursor.execute(sql)
+        res = mycursor.fetchall()
+        if res:
+            for x in res:
+                y = str(x)[:-3][2:]
+            mutedrole2 = discord.utils.get(ctx.guild.roles, id=int(y))
+            for mutedrole3 in user.roles:
+                if mutedrole3.id == mutedrole2:
+                    await user.remove_roles(mutedrole2)
+                    await ctx.send('Unmuted user.')
+                    return
+            await ctx.send('This user is not muted.')
+        else:
+            await ctx.send('Muted role is not setted (Use muted_role command to set).')
+
 def setup(client):
     client.add_cog(Moderation(client))
