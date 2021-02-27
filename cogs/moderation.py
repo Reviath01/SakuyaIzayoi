@@ -597,8 +597,8 @@ class Moderation(commands.Cog):
                 y = str(x)[:-3][2:]
             mutedrole2 = discord.utils.get(ctx.guild.roles, id=int(y))
             for mutedrole3 in user.roles:
-                if mutedrole3.id == mutedrole2:
-                    await user.remove_roles(mutedrole2)
+                if mutedrole3 == mutedrole2:
+                    await user.remove_roles(mutedrole3)
                     await ctx.send('Unmuted user.')
                     return
             await ctx.send('This user is not muted.')
