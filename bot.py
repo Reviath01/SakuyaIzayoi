@@ -39,6 +39,36 @@ def get_prefix(client, message):
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
+async def on_member_update(before, after):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sakuya"
+    )
+    cursor = mydb.cursor()
+    ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
+    cursor.execute(ch)
+    res = cursor.fetchall()
+    if res:
+        for x in res:
+            y = str(x)[:-3][2:]
+    else:
+        return
+    logch = before.guild.get_channel(int(y))
+
+    if (before.display_name != after.display_name):
+            embed1 = discord.Embed(colour=discord.Colour.red(), description=f"{before.mention}'s username updated!")
+            embed1.add_field(name=f"User ID: \n{before.id}", value=f"Old name: `{before.display_name}` \nNew name: `{after.display_name}`")
+            await logch.send(embed=embed1)
+    
+    if (before.roles != after.roles):
+            embed2 = discord.Embed(colour=discord.Colour.blue(), description="User roles updated!")
+            embed2.add_field(name=f"User", value=f"{before.mention} `({before.id})`")
+            embed2.add_field(name="New roles:", value=after.user.roles.mention)
+            await logch.send(embed=embed2)
+
+@client.event
 async def on_guild_role_create(role):
     mydb = mysql.connector.connect(
         host="localhost",
