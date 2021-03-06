@@ -1,9 +1,7 @@
 import discord
 import os
 from discord.ext import commands, tasks
-import sys
 import json
-import inspect
 import mysql.connector
 import datetime
 
@@ -447,18 +445,6 @@ async def reload(ctx, extension):
 async def shutdown(ctx):
     await ctx.send('Shuting down!')
     await client.logout()
-
-def restart_program():
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
-
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def restart(ctx):
-    await ctx.send("Restarting...")
-    log = client.get_channel(790640302452375562)
-    await log.send('Restarting...')
-    restart_program()
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
