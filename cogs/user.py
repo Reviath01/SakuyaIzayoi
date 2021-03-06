@@ -67,8 +67,8 @@ class User(commands.Cog):
         mycursor.execute(warns3)
         myresult2 = mycursor.fetchall()
         if myresult2:
-            for z in myresult2:
-                t = str(z)[:-3][2:]
+            tt = [str(warn1)[:-3][2:] for warn1 in myresult2]
+            t = ", ".join(tt)
         else:
             t = "This user didn't warned on this guild"
         embed = discord.Embed(colour=member.top_role.colour, timestamp=ctx.message.created_at, title=f"User Info - {member}")
@@ -87,7 +87,7 @@ class User(commands.Cog):
         embed.add_field(name="Status:", value=str(member.status), inline=True)
         embed.add_field(name="Activity:", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}", inline=True)
         embed.add_field(name="Bot:", value=member.bot)
-        embed.add_field(name="Last Warn:", value=t)
+        embed.add_field(name="Warns:", value=t)
         await ctx.send(embed=embed)
 
     @commands.command(brief="Fetch the profile picture of a user.", description="Fetch the profile picture of a user.", aliases=["pfp", "profile", "pp"])
@@ -268,7 +268,8 @@ class User(commands.Cog):
         mycursor.execute(cmd)
         myresult8 = mycursor.fetchall()
         if myresult8:
-            disabledcmds = len(myresult8)
+            disabledcmds2 = [str(aa)[:-3][2:] for aa in myresult8]
+            disabledcmds = ", ".join(disabledcmds2)
         else:
             disabledcmds = "There is no commands disabled"
 
@@ -289,7 +290,7 @@ class User(commands.Cog):
         embed.add_field(name="Autorole", value=f"{autorole2}")
         embed.add_field(name="Prefix", value=f"{prefix}")
         embed.add_field(name="Logging channel", value=f"{logchannel}")
-        embed.add_field(name="Disabled commands size", value=f"{disabledcmds}")
+        embed.add_field(name="Disabled commands", value=f"{disabledcmds}")
         embed.add_field(name="Muted role", value=f"{mutedrole}")
         await ctx.send(embed=embed)
 
