@@ -460,23 +460,12 @@ async def restart(ctx):
     await log.send('Restarting...')
     restart_program()
 
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def set_presence(ctx, *, presence):
-    await ctx.send(f'Setting presence as "{presence}"')
-    await client.change_presence(activity=discord.Game(presence))
-
-@client.command(name='eval', pass_context=True, brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def eval_(ctx, *, command):
-    res = eval(command)
-    if inspect.isawaitable(res):
-        await ctx.send(await res)
-    else:
-        await ctx.send(res)
-
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
+
+for filename in os.listdir('./commands'):
+    if filename.endswith('.py'):
+        client.load_extension(f'commands.{filename[:-3]}')
 
 client.run('TOKEN')
