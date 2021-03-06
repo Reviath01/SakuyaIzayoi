@@ -471,17 +471,11 @@ class Moderation(commands.Cog):
                 await ctx.send('This command is already disabled.')
                 return
             else:
-                for x in self.client.commands:
-                    y = str(x)
-                if y != command:
-                    await ctx.send(f'I can\'t find `{command}`')
-                    return
-                else:
-                    sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
-                    val = (command, ctx.guild.id)
-                    mycursor.execute(sql2, val)
-                    mydb.commit()
-                    await ctx.send(f'Disabled {command}.')
+                sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
+                val = (command, ctx.guild.id)
+                mycursor.execute(sql2, val)
+                mydb.commit()
+                await ctx.send(f'Disabled {command}.')
         else:
             sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
             val = (command, ctx.guild.id)
