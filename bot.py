@@ -65,7 +65,12 @@ async def on_member_update(before, after):
     if (before.roles != after.roles):
             embed2 = discord.Embed(colour=discord.Colour.blue(), description="User roles updated!")
             embed2.add_field(name=f"User", value=f"{before.mention} `({before.id})`")
-            embed2.add_field(name="New roles:", value=after.user.roles.mention)
+            oldRoles = [role.mention for role in before.roles[1:]]
+            oldRoles.append("@everyone")
+            newRoles = [role.mention for role in after.roles[1:]]
+            newRoles.append("@everyone")
+            embed2.add_field(name="Old roles:", value=", ".join(oldRoles))
+            embed2.add_field(name="New roles:", value=", ".join(newRoles))
             await logch.send(embed=embed2)
 
 @client.event
