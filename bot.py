@@ -419,9 +419,11 @@ async def issue(ctx):
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
+        print(f"Loaded cogs.{filename[:-3]}.")
 
 for filename in os.listdir('./commands'):
     if filename.endswith('.py'):
         client.load_extension(f'commands.{filename[:-3]}')
+        print(f"Loaded commands.{filename[:-3]}.")
 
 client.run('TOKEN')

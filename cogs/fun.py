@@ -7,10 +7,6 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Fun commands are loaded!')
-
     @commands.command(brief="Shows server icon.", description="Shows server icon on a embed.")
     async def icon(self, ctx):
         mydb = mysql.connector.connect(

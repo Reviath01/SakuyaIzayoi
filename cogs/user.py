@@ -14,10 +14,6 @@ class User(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('User commands are loaded!')
-
     @commands.command(brief="Send's latency of bot.", description="Send's latency of bot.")
     async def ping(self, ctx):
         mydb = mysql.connector.connect(

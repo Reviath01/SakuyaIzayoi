@@ -8,10 +8,6 @@ class Moderation(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Moderation commands are loaded!')
-
     @commands.command(brief="Ban the user.", description="Allow's you to ban the user.")
     @commands.has_permissions(ban_members = True)
     async def ban(self, ctx, member:discord.User, *, reason = None):
