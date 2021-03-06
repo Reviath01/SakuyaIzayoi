@@ -440,12 +440,6 @@ async def reload(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Reloaded cogs.{extension}.')
 
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def shutdown(ctx):
-    await ctx.send('Shuting down!')
-    await client.logout()
-
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
