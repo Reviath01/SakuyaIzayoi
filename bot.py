@@ -421,12 +421,6 @@ async def author(ctx):
     authorembed = discord.Embed(description="My Author: \n<@!770218429096656917> ([Reviath#0001](https://discord.com/users/770218429096656917))", colour=discord.Colour.purple())
     await ctx.send(embed = authorembed)
 
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def load(ctx, extension):
-    client.load_extension(f'cogs.{extension}')
-    await ctx.send(f'Loaded cogs.{extension}.')
-
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
