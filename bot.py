@@ -411,11 +411,6 @@ async def on_ready():
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
     await log.send('I am ready to use!')
 
-@client.command(brief="Allows you to create issue", description="Allows you to create issue")
-async def issue(ctx):
-    gitlabembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here to create issue on GitLab](https://git.randomchars.net/Reviath/sakuya-izayoi) \n[If you don't know how to use GitLab, you can come to our server and specify the problem.](https://discord.gg/Nvte7RYfqY)")
-    await ctx.send(embed=gitlabembed)
-
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
