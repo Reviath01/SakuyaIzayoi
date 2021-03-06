@@ -298,6 +298,10 @@ async def on_message(message):
         database="sakuya"
     )
     cursor = mydb.cursor()
+    sql1 = "INSERT INTO messages (serverid, messagecontent, userid) VALUES (%s, %s, %s)"
+    val1 = (message.guild.id, message.content, message.author.id)
+    cursor.execute(sql1, val1)
+    mydb.commit()
     isafk = f"SELECT isafk FROM afk WHERE memberid ='{message.author.id}' AND guildid ='{message.guild.id}'"
     cursor.execute(isafk)
     res = cursor.fetchall()
@@ -410,6 +414,44 @@ async def on_ready():
     await client.change_presence(activity=discord.Game("Prefix: !"))
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
     await log.send('I am ready to use!')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def load_cog(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'Loaded cogs.{extension}.')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def unload_command(ctx, extension):
+    client.unload_extension(f'commands.{extension}')
+    await ctx.send(f'Unloaded commands.{extension}.')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def unload_cog(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+    await ctx.send(f'Unloaded cogs.{extension}.')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def reload_command(ctx, command):
+    client.unload_extension(f'commands.{command}')
+    client.load_extension(f'commands.{command}')
+    await ctx.send(f'Reloaded commands.{command}.')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def reload_cog(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'Reloaded cogs.{extension}.')
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def load_command(ctx, extension):
+    client.load_extension(f'commands.{extension}')
+    await ctx.send(f'Loaded commands.{extension}.')
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
