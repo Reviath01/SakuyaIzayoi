@@ -157,7 +157,7 @@ class Moderation(commands.Cog):
                 dlt = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
                 mydb.commit()
-                await ctx.send('Resetted prefix.')
+                await ctx.send('Reset prefix.')
             else:
                 dlt = f"DELETE FROM prefixes WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
@@ -166,7 +166,7 @@ class Moderation(commands.Cog):
                 val = (prefix, ctx.guild.id)
                 mycursor.execute(sql, val)
                 mydb.commit()
-                await ctx.send(f'Setted new prefix as {prefix}.')
+                await ctx.send(f'Set new prefix as {prefix}.')
         else:
             if prefix == None:
                 await ctx.send('You need to specify new prefix.')
@@ -175,7 +175,7 @@ class Moderation(commands.Cog):
             val = (prefix, ctx.guild.id)
             mycursor.execute(sql, val)
             mydb.commit()
-            await ctx.send(f'Setted prefix as {prefix}.')
+            await ctx.send(f'Set prefix as {prefix}.')
 
     @commands.command(aliases=['welcome_ch', 'welcomech'], brief="Sets welcome channel.", description="Sets welcome channel as mentioned channel.")
     @commands.has_permissions(administrator=True)
@@ -195,7 +195,7 @@ class Moderation(commands.Cog):
                 dlt = f"DELETE FROM welcomech WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
                 mydb.commit()
-                await ctx.send('Resetted welcome.channel.')
+                await ctx.send('Reset welcome.channel.')
             else:
                 dlt = f"DELETE FROM welcomech WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
@@ -204,7 +204,7 @@ class Moderation(commands.Cog):
                 val = (channel.id, ctx.guild.id)
                 mycursor.execute(sql, val)
                 mydb.commit()
-                await ctx.send(f'Setted new welcome.channel as {channel.mention}.')
+                await ctx.send(f'Set new welcome.channel as {channel.mention}.')
 
         else:
             sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
@@ -231,7 +231,7 @@ class Moderation(commands.Cog):
                 msg3 = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(msg3)
                 mydb.commit()
-                await ctx.send('Resetted welcome.message.')
+                await ctx.send('Reset welcome.message.')
             else:
                 msg4 = f"DELETE FROM welcomemsg WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(msg4)
@@ -240,13 +240,13 @@ class Moderation(commands.Cog):
                 val = (message, ctx.guild.id)
                 mycursor.execute(msg2, val)
                 mydb.commit()
-                await ctx.send('Setted new welcome.message.')
+                await ctx.send('Set new welcome.message.')
         else:
             msg2 = "INSERT INTO welcomemsg (msg, serverid) VALUES (%s, %s)"
             val = (message, ctx.guild.id)
             mycursor.execute(msg2, val)
             mydb.commit()
-            await ctx.send('Setted welcome.message.')
+            await ctx.send('Set welcome.message.')
 
     @commands.command(aliases=['leavemsg', 'leave_msg'], brief="Sets new leave message.", description="Sets new leave message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
@@ -266,7 +266,7 @@ class Moderation(commands.Cog):
                 dlt = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
                 mydb.commit()
-                await ctx.send('Resetted leave.message.')
+                await ctx.send('Reset leave.message.')
             else:
                 dlt = f"DELETE FROM leavemsg WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dlt)
@@ -275,13 +275,13 @@ class Moderation(commands.Cog):
                 val = (message, ctx.guild.id)
                 mycursor.execute(msg2, val)
                 mydb.commit()
-                await ctx.send(f'Setted new leave.message.')
+                await ctx.send(f'Set new leave.message.')
         else:
             msg2 = "INSERT INTO leavemsg (msg, serverid) VALUES (%s, %s)"
             val = (message, ctx.guild.id)
             mycursor.execute(msg2, val)
             mydb.commit()
-            await ctx.send('Setted leave.message.')
+            await ctx.send('Set leave.message.')
 
     @commands.command(brief="Sets leave channel.", description="Sets leave channel as mentioned channel.", aliases=['leave_ch', 'leavech'])
     @commands.has_permissions(administrator=True)
@@ -301,7 +301,7 @@ class Moderation(commands.Cog):
                 dltch = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(dltch)
                 mydb.commit()
-                await ctx.send('Resetted leave channel')
+                await ctx.send('Reset leave channel')
             else:
                 delch = f"DELETE FROM leavech WHERE serverid ='{ctx.guild.id}'"
                 mycursor.execute(delch)
@@ -336,7 +336,7 @@ class Moderation(commands.Cog):
                 sql2 = f"DELETE FROM autorole WHERE serverid = '{ctx.guild.id}'"
                 mycursor.execute(sql2)
                 mydb.commit()
-                await ctx.send('Resetted autorole.')
+                await ctx.send('Reset autorole.')
             else:
                 sql2 = f"DELETE FROM autorole WHERE serverid = '{ctx.guild.id}'"
                 mycursor.execute(sql2)
@@ -345,13 +345,13 @@ class Moderation(commands.Cog):
                 val = (role.id, ctx.guild.id)
                 mycursor.execute(sql, val)
                 mydb.commit()
-                await ctx.send('Successfully setted new autorole.')
+                await ctx.send('Successfully set new autorole.')
         else:
             sql = "INSERT INTO autorole (roleid, serverid) VALUES (%s, %s)"
             val = (role.id, ctx.guild.id)
             mycursor.execute(sql, val)
             mydb.commit()
-            await ctx.send('Successfully setted autorole.')
+            await ctx.send('Successfully set autorole.')
 
     @commands.command(brief="Warns user.", description="Warns mentioned user.")
     @commands.has_permissions(ban_members=True)
@@ -414,7 +414,7 @@ class Moderation(commands.Cog):
         allwarns = f"DELETE FROM warns WHERE guildid ='{ctx.guild.id}'"
         cursor.execute(allwarns)
         mydb.commit()
-        await ctx.send('All warns have been resetted.')
+        await ctx.send('All warns have been reset.')
 
     @commands.command(brief="Sets logging channel", description="Sets logging channel as mentioned channel, if you don't mention a channel it will be reset")
     @commands.has_permissions(administrator=True)
@@ -434,7 +434,7 @@ class Moderation(commands.Cog):
                 delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
                 cursor.execute(delch)
                 mydb.commit()
-                await ctx.send('Resetted log')
+                await ctx.send('Reset log.')
             else:
                 delch = f"DELETE FROM log WHERE guildid ='{ctx.guild.id}'"
                 cursor.execute(delch)
@@ -449,7 +449,7 @@ class Moderation(commands.Cog):
         val = (channel.id, ctx.guild.id)
         cursor.execute(setch, val)
         mydb.commit()
-        await ctx.send(f'Setted log channel as {channel.mention}')
+        await ctx.send(f'Set log channel as {channel.mention}')
 
     @commands.command(brief="Allows you to disable command", description="Allows you to disable command")
     @commands.has_permissions(administrator=True)
@@ -521,7 +521,7 @@ class Moderation(commands.Cog):
                 sql2 = f"DELETE FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
                 mycursor.execute(sql2)
                 mydb.commit()
-                await ctx.send('Resetted muted role.')
+                await ctx.send('Reset muted role.')
                 return
             else:
                 sql3 = f"DELETE FROM mutedroles WHERE guildid ='{ctx.guild.id}'"
@@ -529,7 +529,7 @@ class Moderation(commands.Cog):
                 mydb.commit()
                 sql4 = f"INSERT INTO mutedroles (role, guildid) VALUES ({role.id}, {ctx.guild.id})"
                 mycursor.execute(sql4)
-                await ctx.send('Setted new muted role.')
+                await ctx.send('Set new muted role.')
                 mydb.commit()
                 return
         if role == None:
@@ -539,9 +539,9 @@ class Moderation(commands.Cog):
             sql5 = f"INSERT INTO mutedroles (role, guildid) VALUES ({role.id}, {ctx.guild.id})"
             mycursor.execute(sql5)
             mydb.commit()
-            await ctx.send('Setted muted role.')
+            await ctx.send('Set muted role.')
 
-    @commands.command(brief="Allows you to mute someone.", description="Gives setted muted role (with `muted_role` command) to user.")
+    @commands.command(brief="Allows you to mute someone.", description="Gives muted role to user.")
     @commands.has_permissions(kick_members=True)
     async def mute(self, ctx, user: discord.Member):
         mydb = mysql.connector.connect(
@@ -565,9 +565,9 @@ class Moderation(commands.Cog):
             await user.add_roles(role3)
             await ctx.send(f'Muted {user.mention}.')
         else:
-            await ctx.send('Muted role is not setted (Use !muted_role command to set).')
+            await ctx.send('Muted role is not set (Use !muted_role command to set).')
 
-    @commands.command(brief="Allows you to ummute someone.", description="Removes setted muted role (with `muted_role` command) from user.")
+    @commands.command(brief="Allows you to ummute someone.", description="Removes muted role from user.")
     @commands.has_permissions(kick_members=True)
     async def unmute(self, ctx, user: discord.Member):
         mydb = mysql.connector.connect(
@@ -591,7 +591,7 @@ class Moderation(commands.Cog):
                     return
             await ctx.send('This user is not muted.')
         else:
-            await ctx.send('Muted role is not setted (Use muted_role command to set).')
+            await ctx.send('Muted role is not set (Use muted_role command to set).')
 
 def setup(client):
     client.add_cog(Moderation(client))
