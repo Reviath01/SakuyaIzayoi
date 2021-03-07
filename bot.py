@@ -298,6 +298,18 @@ async def on_message(message):
         database="sakuya"
     )
     cursor = mydb.cursor()
+    settedprefix = f"SELECT prefix FROM prefixes WHERE serverid ='{message.guild.id}'"
+    cursor.execute(settedprefix)
+    ress = cursor.fetchall()
+    if ress:
+        for bb in ress:
+            prefix = f"{str(bb)[:-3][2:]}"
+    else:
+        prefix = '!'
+
+    if (message.content == f"<@!{client.user.id}>"):
+        await message.channel.send(f"My prefix is {prefix}")
+
     sql1 = "INSERT INTO messages (serverid, messagecontent, userid) VALUES (%s, %s, %s)"
     val1 = (message.guild.id, message.content, message.author.id)
     cursor.execute(sql1, val1)
