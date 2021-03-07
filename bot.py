@@ -4,6 +4,8 @@ from discord.ext import commands, tasks
 import json
 import mysql.connector
 import datetime
+import sys
+import inspect
 
 intents = discord.Intents().all()
 
@@ -435,22 +437,9 @@ async def load_cog(ctx, extension):
 
 @client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
-async def unload_command(ctx, extension):
-    client.unload_extension(f'commands.{extension}')
-    await ctx.send(f'Unloaded commands.{extension}.')
-
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
 async def unload_cog(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'Unloaded cogs.{extension}.')
-
-@client.command(brief="Author command", description="Author command", hidden=True)
-@commands.is_owner()
-async def reload_command(ctx, command):
-    client.unload_extension(f'commands.{command}')
-    client.load_extension(f'commands.{command}')
-    await ctx.send(f'Reloaded commands.{command}.')
 
 @client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
@@ -459,20 +448,50 @@ async def reload_cog(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'Reloaded cogs.{extension}.')
 
+@client.command(brief="Shows my author", description="Shows my author")
+async def author(ctx):
+    authorembed = discord.Embed(description="My Author: \n<@!770218429096656917> ([Reviath#0001](https://discord.com/users/770218429096656917))", colour=discord.Colour.purple())
+    await ctx.send(embed = authorembed)
+
 @client.command(brief="Author command", description="Author command", hidden=True)
 @commands.is_owner()
-async def load_command(ctx, extension):
-    client.load_extension(f'commands.{extension}')
-    await ctx.send(f'Loaded commands.{extension}.')
+async def shutdown(ctx):
+    await ctx.send('Shuting down!')
+    await client.logout()
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def set_presence(ctx, *, presence):
+    await ctx.send(f'Setting presence as "{presence}"')
+    await client.change_presence(activity=discord.Game(presence))
+
+def restart_program():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+@client.command(brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def restart(ctx):
+    await ctx.send("Restarting...")
+    restart_program()
+
+@client.command(name='eval', pass_context=True, brief="Author command", description="Author command", hidden=True)
+@commands.is_owner()
+async def eval_(ctx, *, command):
+    res = eval(command)
+    if inspect.isawaitable(res):
+        await ctx.send(await res)
+    else:
+        await ctx.send(res)
+
+@client.command(brief="Allows you to create issue", description="Allows you to create issue")
+async def issue(ctx):
+    issueembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here to create issue on GitLab](https://git.randomchars.net/Reviath/sakuya-izayoi) \n[If you don't know how to use GitLab, you can come to our server and specify the problem.](https://discord.gg/Nvte7RYfqY)")
+    await ctx.send(embed=issueembed)
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f"Loaded cogs.{filename[:-3]}.")
-
-for filename in os.listdir('./commands'):
-    if filename.endswith('.py'):
-        client.load_extension(f'commands.{filename[:-3]}')
-        print(f"Loaded commands.{filename[:-3]}.")
 
 client.run('TOKEN')
