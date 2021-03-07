@@ -312,10 +312,6 @@ async def on_message(message):
     if (message.content == f"<@!{client.user.id}>"):
         await message.channel.send(f"My prefix is {prefix}")
 
-    sql1 = "INSERT INTO messages (serverid, messagecontent, userid) VALUES (%s, %s, %s)"
-    val1 = (message.guild.id, message.content, message.author.id)
-    cursor.execute(sql1, val1)
-    mydb.commit()
     isafk = f"SELECT isafk FROM afk WHERE memberid ='{message.author.id}' AND guildid ='{message.guild.id}'"
     cursor.execute(isafk)
     res = cursor.fetchall()
