@@ -10,8 +10,6 @@ def restart_program():
 @commands.is_owner()
 async def restart(ctx):
     await ctx.send("Restarting...")
-    log = client.get_channel(790640302452375562)
-    await log.send('Restarting...')
     restart_program()
 
 def setup(client):

@@ -116,7 +116,7 @@ class User(commands.Cog):
 
     @commands.command(brief="Invite me!", description="My invite link.")
     async def invite(self, ctx):
-        inviteembed = discord.Embed(colour=discord.Colour.red(), description=f"[Click here to invite me!](https://discordapp.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)")
+        inviteembed = discord.Embed(colour=discord.Colour.red(), description=f"[Click here to invite me!](https://discordapp.com/oauth2/authorize?client_id={self.client.user.id}&scope=bot&permissions=8)")
         await ctx.send(embed=inviteembed)
 
     @commands.command(brief="Shows all roles.", description="Shows role list.", aliases=['role-list', 'rolelist', 'role_list'])
