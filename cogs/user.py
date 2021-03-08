@@ -174,6 +174,7 @@ class User(commands.Cog):
         statembed.add_field(name="Discord.py version", value=str(discord.__version__), inline=True)
         statembed.add_field(name=f"Cached messages (in {text})", value=str(len(self.client.cached_messages)), inline=True)
         statembed.add_field(name="Python version", value=platform.python_version(), inline=True)
+        statembed.add_field(name="Users size", value=len(self.client.users))
         await ctx.send(embed=statembed)
 
     @commands.command(brief="Shows server settings.", description="Shows server settings.", aliases=['server-settings', 'server_settings'])
