@@ -1,6 +1,6 @@
 # Sakuya Izayoi
 
-Sakuya Izayoi is my first python Discord bot project. [Click here to invite](https://discord.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)
+Sakuya Izayoi is a multiple purpose Discord bot written in python3 using MySQL. [Click here to invite](https://discord.com/oauth2/authorize?client_id=808385152601817169&scope=bot&permissions=8)
 
 ## Installation
 
@@ -41,4 +41,4 @@ Type "python bot.py" on terminal (if you are using Windows type python3 bot.py)
 [Reviath](https://discord.com/users/770218429096656917/)
 
 ## License
-[GNU GPL v3](LICENSE)
+[GNU GPLv3](LICENSE)
