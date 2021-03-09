@@ -36,7 +36,6 @@ You need MySQL on your system (If you don't know how to install look https://www
 Create a database called sakuya
 Needed tables on this database;
 
-
 prefixes (prefix, serverid),
 
 log (channelid, guildid),
