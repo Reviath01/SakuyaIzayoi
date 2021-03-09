@@ -33,6 +33,34 @@ You need MySQL on your system (If you don't know how to install look https://www
 ```
 
 ```
+Create a database called sakuya
+Needed tables on this database;
+
+
+prefixes (prefix, serverid),
+
+log (channelid, guildid),
+
+afk (isafk, memberid, guildid),
+
+autorole (roleid, serverid),
+
+disabledcommands (commandname, guildid),
+
+leavech (chid, serverid),
+
+leavemsg (msg, serverid),
+
+mutedroles (role, guildid),
+
+warns (warnreason, memberid, guildid),
+
+welcomech (chid, serverid),
+
+welcomemsg (msg, serverid)
+```
+
+```
 Type "python bot.py" on terminal (if you are using Windows type python3 bot.py)
 ```
 
