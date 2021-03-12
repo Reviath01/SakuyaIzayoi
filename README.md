@@ -4,14 +4,10 @@ Sakuya Izayoi is a multiple purpose Discord bot written in python3 using MySQL. 
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord.py, psutil, mysql.connector
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install discord.py, mysql.connector
 
 ```bash
 pip install discord.py
-```
-
-```bash
-pip install psutil
 ```
 
 ```bash
