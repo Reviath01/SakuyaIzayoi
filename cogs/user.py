@@ -329,5 +329,16 @@ class User(commands.Cog):
         embed2 = discord.Embed(colour=discord.Colour.blue(), description=f"{ctx.author.mention} you are now afk with reason: \n`{reason}`")
         await ctx.send(embed=embed2)
 
+    @commands.command(brief="Shows server info", description="Shows server info")
+    async def server_info(self, ctx):
+        infoembed = discord.Embed(title=f"Server Info", description=f"{ctx.guild.name}'s info", colour=discord.Colour.blue())
+        infoembed.add_field(name="Member size", value=f"{len(ctx.guild.members)}")
+        infoembed.add_field(name="Server owner", value=f"{ctx.guild.owner.mention}")
+        infoembed.add_field(name="Emoji size", value=f"{len(ctx.guild.emojis)}")
+        infoembed.add_field(name="Roles", value=f"{len(ctx.guild.roles)} `(use roles command to see al roles)`")
+        infoembed.add_field(name="Created at", value=f"{str(ctx.guild.created_at)[:-7]}")
+        infoembed.set_image(url=f"{ctx.guild.icon_url}")
+        await ctx.send(embed=infoembed)
+
 def setup(client):
     client.add_cog(User(client))
