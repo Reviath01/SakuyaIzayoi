@@ -34,7 +34,7 @@ def get_prefix(client, message):
             y = str(x)[:-3][2:]
     else:
 	    y = str('!')
-    return y
+    return commands.when_mentioned_or(y)(client, message)
 
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
