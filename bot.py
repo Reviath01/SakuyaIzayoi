@@ -39,6 +39,10 @@ def get_prefix(client, message):
 client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
+async def on_error(event, *args, **kwargs):
+    await client.get_channel(790640302452375562).send(f"{event} {args} {kwargs}")
+
+@client.event
 async def on_member_update(before, after):
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
