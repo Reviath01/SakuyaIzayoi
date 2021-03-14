@@ -335,7 +335,7 @@ class User(commands.Cog):
         infoembed.add_field(name="Member size", value=f"{len(ctx.guild.members)}")
         infoembed.add_field(name="Server owner", value=f"{ctx.guild.owner.mention}")
         infoembed.add_field(name="Emoji size", value=f"{len(ctx.guild.emojis)}")
-        infoembed.add_field(name="Roles", value=f"{len(ctx.guild.roles)} `(use roles command to see al roles)`")
+        infoembed.add_field(name="Roles", value=f"{len(ctx.guild.roles)} `(use roles command to see all roles)`")
         infoembed.add_field(name="Created at", value=f"{str(ctx.guild.created_at)[:-7]}")
         infoembed.set_image(url=f"{ctx.guild.icon_url}")
         await ctx.send(embed=infoembed)
