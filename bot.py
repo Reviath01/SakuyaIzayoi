@@ -40,12 +40,6 @@ client = commands.Bot(command_prefix = get_prefix, intents = intents)
 
 @client.event
 async def on_member_update(before, after):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
     cursor.execute(ch)
@@ -75,12 +69,6 @@ async def on_member_update(before, after):
 
 @client.event
 async def on_guild_role_create(role):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{role.guild.id}'"
     cursor.execute(ch)
@@ -99,12 +87,6 @@ async def on_guild_role_create(role):
 
 @client.event
 async def on_guild_role_delete(role):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{role.guild.id}'"
     cursor.execute(ch)
@@ -123,12 +105,6 @@ async def on_guild_role_delete(role):
 
 @client.event
 async def on_guild_role_update(before, after):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
     cursor.execute(ch)
@@ -156,12 +132,6 @@ async def on_guild_role_update(before, after):
 
 @client.event
 async def on_guild_channel_update(before, after):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
     cursor.execute(ch)
@@ -185,12 +155,6 @@ async def on_guild_channel_update(before, after):
 async def on_message_delete(message):
     if message.author == client.user:
         return
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{message.guild.id}'"
     cursor.execute(ch)
@@ -212,12 +176,6 @@ async def on_message_delete(message):
 
 @client.event
 async def on_guild_channel_delete(channel):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{channel.guild.id}'"
     cursor.execute(ch)
@@ -236,12 +194,6 @@ async def on_guild_channel_delete(channel):
 
 @client.event
 async def on_guild_channel_create(channel):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{channel.guild.id}'"
     cursor.execute(ch)
@@ -262,12 +214,6 @@ async def on_guild_channel_create(channel):
 async def on_message_edit(before, after):
     if before.author == client.user:
         return
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     ch = f"SELECT channelid FROM log WHERE guildid ='{before.guild.id}'"
     cursor.execute(ch)
@@ -293,12 +239,6 @@ async def on_message_edit(before, after):
 
 @client.event
 async def on_message(message):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     cursor = mydb.cursor()
     settedprefix = f"SELECT prefix FROM prefixes WHERE serverid ='{message.guild.id}'"
     cursor.execute(settedprefix)
@@ -358,12 +298,6 @@ async def on_guild_remove(guild):
 
 @client.event
 async def on_member_join(member):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     mycursor = mydb.cursor()
     chid = f"SELECT chid FROM welcomech WHERE serverid ='{member.guild.id}'"
     mycursor.execute(chid)
@@ -393,12 +327,6 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sakuya"
-    )
     mycursor = mydb.cursor()
     chid = f"SELECT chid FROM leavech WHERE serverid ='{member.guild.id}'"
     mycursor.execute(chid)
