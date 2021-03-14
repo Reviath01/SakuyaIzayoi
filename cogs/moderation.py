@@ -470,12 +470,12 @@ class Moderation(commands.Cog):
             if t == command:
                 await ctx.send('This command is already disabled.')
                 return
-            else:
-                sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
-                val = (command, ctx.guild.id)
-                mycursor.execute(sql2, val)
-                mydb.commit()
-                await ctx.send(f'Disabled {command}.')
+        else:
+            sql2 = "INSERT INTO disabledcommands (commandname, guildid) VALUES (%s, %s)"
+            val = (command, ctx.guild.id)
+            mycursor.execute(sql2, val)
+            mydb.commit()
+            await ctx.send(f'Disabled {command}.')
 
     @commands.command(brief="Allows you to enable command", description="Allows you to enable command")
     @commands.has_permissions(administrator=True)
