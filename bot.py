@@ -414,8 +414,12 @@ async def eval_(ctx, *, command):
 
 @client.command(brief="Allows you to create issue", description="Allows you to create issue")
 async def issue(ctx):
-    issueembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here to create issue on GitLab](https://git.randomchars.net/Reviath/sakuya-izayoi) \n[If you don't know how to use GitLab, you can come to our server and specify the problem.](https://discord.gg/Nvte7RYfqY)")
+    issueembed = discord.Embed(colour=ctx.author.top_role.colour, description="[Click here to create issue on GitLab](https://git.randomchars.net/Reviath/sakuya-izayoi) \n[If you don't know how to use GitLab, you can come to our server and specify the problem.](https://discord.gg/xqsTvtM2hk)")
     await ctx.send(embed=issueembed)
+
+@client.command(brief="Sends vote link.", description="Sends vote link.")
+async def vote(ctx):
+    await ctx.send(embed=discord.Embed(colour=ctx.author.top_role.colour, description=f"[Click here!](https://top.gg/bot/{client.user.id}/vote) \nAlso if you vote, you will get a role in my [guild](https://discord.gg/Nvte7RYfqY)"))
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
