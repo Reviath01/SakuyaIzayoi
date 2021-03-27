@@ -6,6 +6,7 @@ import mysql.connector
 import datetime
 import sys
 import inspect
+import discordbotdash.dash as dbd
 
 intents = discord.Intents().all()
 
@@ -352,6 +353,7 @@ async def on_member_remove(member):
 
 @client.event
 async def on_ready():
+    dbd.openDash(client, port = 5000)
     log = client.get_channel(790640302452375562)
     await client.change_presence(activity=discord.Game("Prefix: !"))
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
