@@ -37,7 +37,7 @@ def get_prefix(client, message):
 	    y = str('!')
     return commands.when_mentioned_or(y)(client, message)
 
-client = commands.Bot(command_prefix = get_prefix, intents = intents)
+client = commands.AutoShardedBot(command_prefix = get_prefix, intents = intents)
 
 @client.event
 async def on_error(event, *args, **kwargs):
