@@ -574,7 +574,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send('Muted role is not set (Use !muted_role command to set).')
 
-    @commands.command(brief="Allows you to ummute someone.", description="Removes muted role from user.")
+    @commands.command(brief="Allows you to unmute someone.", description="Removes muted role from user.")
     @commands.has_permissions(kick_members=True)
     async def unmute(self, ctx, user: discord.Member):
         mydb = mysql.connector.connect(
