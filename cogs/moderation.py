@@ -205,13 +205,16 @@ class Moderation(commands.Cog):
                 mycursor.execute(sql, val)
                 mydb.commit()
                 await ctx.send(f'Set new welcome.channel as {channel.mention}.')
-
         else:
-            sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
-            val = (channel.id, ctx.guild.id)
-            mycursor.execute(sql, val)
-            mydb.commit()
-            await ctx.send(f'Setting welcome channel as {channel.mention}.')
+            if channel == None:
+                await ctx.send("You need to specify the channel.")
+                return
+            else:
+                sql = "INSERT INTO welcomech (chid, serverid) VALUES (%s, %s)"
+                val = (channel.id, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send(f'Setting welcome channel as {channel.mention}.')
 
     @commands.command(aliases=['welcome_msg', 'welcomemsg'], brief="Sets new welcome message.", description="Sets new welcome message.(You can use {mention} for mention the user and {username} to see users username.)")
     @commands.has_permissions(administrator=True)
@@ -312,11 +315,15 @@ class Moderation(commands.Cog):
                 mydb.commit()
                 await ctx.send(f'Setting new leave channel as {channel.mention}.')
         else:
-            sql = "INSERT INTO leavech (chid, serverid) VALUES (%s, %s)"
-            val = (channel.id, ctx.guild.id)
-            mycursor.execute(sql, val)
-            mydb.commit()
-            await ctx.send(f'Setting leave channel as {channel.mention}.')
+            if channel == None:
+                await ctx.send("You need to specify the channel.")
+                return
+            else:
+                sql = "INSERT INTO leavech (chid, serverid) VALUES (%s, %s)"
+                val = (channel.id, ctx.guild.id)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                await ctx.send(f'Setting leave channel as {channel.mention}.')
 
     @commands.command(brief="Allows you to set autorole", aliases=['auto_role'])
     @commands.has_permissions(administrator=True)
