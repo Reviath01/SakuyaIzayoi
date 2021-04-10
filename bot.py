@@ -6,7 +6,11 @@ import mysql.connector
 import datetime
 import sys
 import inspect
-import discordbotdash.dash as dbd
+
+with open('config.json', 'r') as f:
+    token_json = json.load(f)
+    get_token = token_json['token']
+    json_prefix = token_json['prefix']
 
 intents = discord.Intents().all()
 
@@ -34,10 +38,11 @@ def get_prefix(client, message):
     	for x in res:
             y = str(x)[:-3][2:]
     else:
-	    y = str('!')
+	    y = str(json_prefix)
+        
     return commands.when_mentioned_or(y)(client, message)
 
-client = commands.AutoShardedBot(command_prefix = get_prefix, intents = intents)
+client = commands.Bot(command_prefix = get_prefix, intents = intents, description=None, shard_count = 1)
 
 @client.event
 async def on_error(event, *args, **kwargs):
@@ -353,7 +358,6 @@ async def on_member_remove(member):
 
 @client.event
 async def on_ready():
-    dbd.openDash(client, port = 5000)
     log = client.get_channel(790640302452375562)
     await client.change_presence(activity=discord.Game("Prefix: !"))
     print(client.user.display_name + '#' + client.user.discriminator + ' is ready!')
@@ -428,4 +432,4 @@ for filename in os.listdir('./cogs'):
         client.load_extension(f'cogs.{filename[:-3]}')
         print(f"Loaded cogs.{filename[:-3]}.")
 
-client.run('TOKEN')
+client.run(str(get_token))
