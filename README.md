@@ -21,7 +21,7 @@ Clone this project.
 ```
 
 ```
-Get your bots token and edit bot.py's client.run('TOKEN') part.  
+Edit config (config.json) file 
 ```
 
 ```
